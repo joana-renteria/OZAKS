@@ -18,8 +18,8 @@ public class Main {
 	private static void konektatu() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			String url = "jdbc:mysql://localhost:3306/web?autoReconnect=true";
-			Connection konexioa = DriverManager.getConnection(url,"root","");
+			String url = "jdbc:mysql://localhost:3306/mysql?";
+			Connection konexioa = DriverManager.getConnection(url,"admin","db");
 			System.out.println("Konektatua!!");
 		} catch (Exception e) {
 			e.printStackTrace();
