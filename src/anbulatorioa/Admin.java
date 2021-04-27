@@ -52,7 +52,7 @@ public class Admin {
 		
 	}
 	public void datuakAldatu() {
-		Reader rd= Reader.getReader();
+		Reader rd = Reader.getReader();
 		System.out.println ("-------GAIXOAREN ZEIN DATU----------");
 		System.out.println ("1- Hospitalean badago ");
 		System.out.println ("2- Ohiko zentroa");
@@ -61,7 +61,7 @@ public class Admin {
 		System.out.println ("5- Bueltatu lehengo menura");
 		System.out.println ("-----------------");
 		int zenb=rd.irakurriInt("Sartu zenbaki bat");
-		while (zenb!=5) {
+		while (zenb != 5) {
 			switch (zenb) {
 				case 1: 
 					
@@ -79,12 +79,26 @@ public class Admin {
 					System.out.println("Saiatu berriro.");
 					break;
 			}
-		} 	if (zenb==5) {
+		} 	if (zenb == 5) {
 			administratu();
 		}
 	}
-	public void botikaEman() {
-		
+	
+	private boolean botikaGehitu(String pBotika) {
+		//TODO botika gehitu, true gauxatu baden
+		//false botika jada existitzen baden
+	}
+	
+	private boolean botikaDago(String pBotika) {
+		//TODO botika dagoen konprobatu
+	}
+	
+	private void botikaEman() {
+		//TODO gaixoari botika eman
+	}
+	
+	private void botikaKendu() {
+		//TODO gaixoari botika kendu
 	}
 	
 }
