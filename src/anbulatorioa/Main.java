@@ -10,19 +10,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Calendar;
-import java.util.Scanner;
 
 public class Main {
-	private BufferedReader br;
 	private static Admin ad;
 	private static Erabiltzailea er;
-	private static String izena = null;
+	private static String izena;
 	//private Connection konexioa;
+
 	
 	private static void konektatu() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			String url = "jdbc:mysql://localhost:3306/anbulatorioa";
+			String url = "jdbc:mysql://localhost/anbulatorioa";
 			Connection konexioa = DriverManager.getConnection(url,"admin","db");
 			System.out.println("Konektatua!!");
 		} catch (Exception e) {
@@ -33,29 +32,35 @@ public class Main {
 	public static int login() {
 		Reader rd = Reader.getReader();
 		String izena = rd.irakurri("Sartu erabiltzaile izena: ");
-		System.out.println(izena);
 		boolean denaOndo = false;
 		int saiakera = 3;
-		int kodea = -1;
-		if(izena == "admin") {
-			try {
-				do {				
-					if(!ad.pasahitzaEgokia(rd.irakurri("Sartu pasahitza: "))) {
+		int kodea = 0;
+		if(izena.equals("admin")) {
+			ad=Admin.getAdmin();
+			String pasa=rd.irakurri("Sartu pasahitza: ");
+			while (!denaOndo && saiakera > 1) {
+				try {			
+					if(!ad.pasahitzaEgokia(pasa)) {
 						throw new PasahitzaOkerra();
 					}
 					denaOndo=true;
 					kodea = 1;
-				} while (!denaOndo && saiakera>0);
-			} catch (PasahitzaOkerra e) {
-				e.mezuaImprimatu();
-				saiakera--;
+				} catch (PasahitzaOkerra e) {
+					e.mezuaImprimatu();
+					pasa=rd.irakurri("Sartu pasahitza: ");
+					saiakera--;
+				}
 			}
-		} else {kodea = 0;}
+			if (!denaOndo) {
+				System.out.println("Saiakera guztiak bukatu zaizkizu.");
+				kodea=-1;
+			}
+		}
 		return kodea;
 	}
 	
 	public static void main(String[] args) throws NumberFormatException, IOException, SQLException {
-		//konektatu();
+		konektatu();
 		int lg = login();
 		if(lg == 1) {
 			ad = Admin.getAdmin();

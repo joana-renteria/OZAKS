@@ -21,9 +21,16 @@ public class Reader {
 	public String irakurri(String pMezua) {
 		System.out.println(pMezua);
 		String emaitza = sc.next();
-		if(sc.hasNext()) {
-			sc.nextLine();
-		}
+	//	if(sc.hasNext()) { //scanner garbitzeko
+	//		sc.nextLine();
+	//	}
 		return emaitza;
+	}
+	
+	public int irakurriInt (String pMezua) {
+		//TODO try and catch y eso
+		String ema= this.irakurri(pMezua);
+		int ema2=Integer.parseInt(ema);
+		return ema2;
 	}
 }
