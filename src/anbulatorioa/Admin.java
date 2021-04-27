@@ -34,7 +34,7 @@ public class Admin {
 					zitaEman();
 					break;
 				case 2:
-					botikaEman();
+					botikaBerria();
 					break;
 				case 3: 
 					datuakAldatu();
@@ -83,8 +83,15 @@ public class Admin {
 			administratu();
 		}
 	}
-	public void botikaEman() {
-		
+	
+	private 
+	public void botikaEman(String pBotika) {
+		//TODO gaixoari botika eman
+	}
+	
+	public void botiaKendu(String pBotika) {
+		//TODO gaixoari botika kendu
+	}
 	}
 	
 }
