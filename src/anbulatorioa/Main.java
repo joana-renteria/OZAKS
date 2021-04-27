@@ -15,19 +15,11 @@ public class Main {
 	private static Admin ad;
 	private static Erabiltzailea er;
 	private static String izena;
-	//private Connection konexioa;
+	private Konexioa kx;
+	private String helb = "localhost/anbulatorioa";
+	private String erab = "admin";
+	private String pasa = "db";
 
-	
-	private static void konektatu() {
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			String url = "jdbc:mysql://localhost/anbulatorioa";
-			Connection konexioa = DriverManager.getConnection(url,"admin","db");
-			System.out.println("Konektatua!!");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 	
 	public static int login() {
 		Reader rd = Reader.getReader();
@@ -59,8 +51,9 @@ public class Main {
 		return kodea;
 	}
 	
-	public static void main(String[] args) throws NumberFormatException, IOException, SQLException {
-		konektatu();
+	public static void main(String[] args) throws NumberFormatException, IOException, SQLException, KonexioarenParamFaltaException {
+		System.out.println("a");
+		kx = Konexioa.getKonexioa(helb,erab,pasa);
 		int lg = login();
 		if(lg == 1) {
 			ad = Admin.getAdmin();
