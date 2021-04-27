@@ -34,7 +34,7 @@ public class Admin {
 					zitaEman();
 					break;
 				case 2:
-					botikaEman();
+					botikaBerria();
 					break;
 				case 3: 
 					datuakAldatu();
