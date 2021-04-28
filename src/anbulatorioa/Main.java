@@ -15,10 +15,10 @@ public class Main {
 	private static Admin ad;
 	private static Erabiltzailea er;
 	private static String izena;
-	private Konexioa kx;
-	private String helb = "localhost/anbulatorioa";
-	private String erab = "admin";
-	private String pasa = "db";
+	private static Konexioa kx;
+	private static String helb = "localhost/anbulatorioa";
+	private static String erab = "admin";
+	private static String pasa = "db";
 
 	
 	public static int login() {
@@ -62,6 +62,7 @@ public class Main {
 			er = Erabiltzailea.getErabil(izena);
 			er.erabili();
 		} else System.exit(-1);
+		System.exit(0);
 	}
 
 }

@@ -8,10 +8,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class Konexioa {
+	private static Konexioa nireKonexioa;
 	private static Connection konexioa;
-	private String helb;
-	private String erab;
-	private String pasa;
+	private static String helb;
+	private static String erab;
+	private static String pasa;
 	
 
 	private Konexioa() {
@@ -19,41 +20,46 @@ public class Konexioa {
 		this.konektatu();
 	}
 	
-	public Konexioa getKonexioa() throws KonexioarenParamFaltaException {
+	public static Konexioa getKonexioa() throws KonexioarenParamFaltaException {
 		try {
 			if(helb == null ||
 					erab == null ||
 					pasa == null) {
-				throw KonexioarenParamFaltaException;
+				throw new KonexioarenParamFaltaException();
 					}
-			if(konexioa == null) {
-				konexioa = new Konexioa();
+			if(nireKonexioa == null) {
+				nireKonexioa = new Konexioa();
 			}
 		} catch (KonexioarenParamFaltaException e) {
 			e.printStackTrace();
 		}
-		return konexioa;
+		return nireKonexioa;
 	}
 	
-	public Konexioa getKonexioa(String pHelb, String pErab, String pPasa) throws KonexioarenParamFaltaException {
+	public static Konexioa getKonexioa(String pHelb, String pErab, String pPasa) throws KonexioarenParamFaltaException {
 		try {
-			this.setDatuak(pHelb,pErab,pPasa);
-			if(konexioa == null) {
-				konexioa = new Konexioa();
+			setDatuak(pHelb,pErab,pPasa);
+			if(helb == null ||
+					erab == null ||
+					pasa == null) {
+				throw new KonexioarenParamFaltaException();
+					}
+			if(nireKonexioa == null) {
+				nireKonexioa = new Konexioa();
 			}
 		} catch (KonexioarenParamFaltaException e) {
 			e.printStackTrace();
 		}
-		return konexioa;
+		return nireKonexioa;
 	}
 
-	public void setDatuak(String pHelb, String pErab, String pPasa) {
-		this.helb = pHelb;
-		this.erab = pErab;
-		this.pasa = pPasa;
+	public static void setDatuak(String pHelb, String pErab, String pPasa) {
+		helb = pHelb;
+		erab = pErab;
+		pasa = pPasa;
 	}
 
-	private static void konektatu() {
+	private void konektatu() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			konexioa = DriverManager.getConnection("jdbc:mysql://"+this.helb,this.erab,this.pasa);
