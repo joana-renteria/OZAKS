@@ -87,18 +87,28 @@ public class Admin {
 	private boolean botikaGehitu(String pBotika) {
 		//TODO botika gehitu, true gauxatu baden
 		//false botika jada existitzen baden
+		return true;
+	}
+	
+	private boolean botikaEzabatu(String pBotika) {
+		//TODO botika sistematik ezabatu
+		//ezabatzerakoan true bestela false
+		return true;
 	}
 	
 	private boolean botikaDago(String pBotika) {
 		//TODO botika dagoen konprobatu
+		return true;
 	}
 	
-	private void botikaEman() {
+	private boolean botikaEman() {
 		//TODO gaixoari botika eman
+		return true;
 	}
 	
-	private void botikaKendu() {
+	private boolean botikaKendu() {
 		//TODO gaixoari botika kendu
+		return true;
 	}
 	
 }
