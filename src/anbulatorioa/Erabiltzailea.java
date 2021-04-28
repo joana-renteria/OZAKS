@@ -44,13 +44,13 @@ public class Erabiltzailea {
 		
 	}
 	
-	private void zitaEskatu() {
-		
+	private boolean zitaEskatu() {
+		return true;
 	}
 	private void botikaInprimatu() {
 		
 	}
-	private datuakAldatu() {
-		
+	private boolean datuakAldatu() {
+		return true;
 	}
 }
