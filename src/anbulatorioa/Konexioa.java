@@ -73,4 +73,27 @@ public class Konexioa {
 		return konexioa.createStatement();
 	}
 	
+	public ResultSet kontsulta(String sql) {
+		ResultSet em;
+		try {
+			Statement s = this.konexioa.createStatement();
+			em = s.executeQuery(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return em;
+	}
+	
+	public boolean aldaketa(String sql) {
+		try {
+			Statement s = this.konexioa.createStatement();
+			s.executeUpdate(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
 }
