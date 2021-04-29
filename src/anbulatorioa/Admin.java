@@ -1,5 +1,6 @@
 package anbulatorioa;
 
+import java.sql.SQLException;
 import java.sql.Date;
 import java.sql.Statement;
 
@@ -89,8 +90,8 @@ public class Admin {
 	
 	private void gaixoaGehitu(int pNAN, int pZenb, String pIzen,
 			String pAbiz, String pSex, Date pData, String pZentr,
-			int pHospDago, String pNonBizi, String pOdol) {
-		Statement s = Konexioa.getKonexioa().createStatements();
+			int pHospDago, String pNonBizi, String pOdol) throws SQLException, KonexioarenParamFaltaException {
+		Statement s = Konexioa.getKonexioa().createStatement();
 		String sql = "INSERT INTO gaixoa("+pNAN+","+pZenb+",'"+pIzen+"','"+pAbiz+"','"+pSex+"','"+pData.toString()+"','"+pZentr+"','"+pHospDago+"','"+pNonBizi+"','"+pOdol+"')";
 		s.executeUpdate(sql);
 	}
