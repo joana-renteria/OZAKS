@@ -1,16 +1,22 @@
 package anbulatorioa;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 public class Erabiltzailea {
 	private static Erabiltzailea nireErabil = null;
 	private String izena;
+	private int nan;
 	
-	private Erabiltzailea(String pIzena) {
+	private Erabiltzailea(String pIzena, int pNAN) {
 		this.izena = pIzena;
+		this.nan = pNAN;
 	}
 	
-	public static Erabiltzailea getErabil(String pIzena) {
+	public static Erabiltzailea getErabil(String pIzena, int pNAN) {
 		if(nireErabil == null) {
-			nireErabil = new Erabiltzailea(pIzena);
+			nireErabil = new Erabiltzailea(pIzena, pNAN);
 		}
 		return nireErabil;
 	}
@@ -44,13 +50,24 @@ public class Erabiltzailea {
 		
 	}
 	
-	private void zitaEskatu() {
-		Statement s = Konexioa.getKonexioa().createStatements();
-		return true;
+	private void zitaEskatu() throws SQLException, KonexioarenParamFaltaException {
+		//Statement s = Konexioa.getKonexioa().createStatement();
 	}
-	private void botikaInprimatu() {
+	
+	private void botikaInprimatu() throws SQLException, KonexioarenParamFaltaException {
+		String sql = "SELECT IZENA, MARKA, DOSIKOP, IRAUNGIDATA FROM BOTIKA WHERE GAIXONAN="+nan;
+		ResultSet konts = Konexioa.getKonexioa().kontsulta(sql);
+		while (konts.next()) {
+			System.out.println("Izena: "+konts.getString("IZENA"));
+			System.out.println("Marka: "+konts.getString("MARKA"));
+			System.out.println("DosiKop: "+konts.getString("DOSIKOP"));
+			System.out.println("IraungiData: "+konts.getString("IRAUNGIDATA"));
+		}
+
+		System.out.println();
 		
 	}
+	
 	private boolean datuakAldatu() {
 		return true;
 	}
