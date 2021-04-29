@@ -96,6 +96,15 @@ public class Admin {
 		s.executeUpdate(sql);
 	}
 	
+	private void medikuaGehitu(int pNAN, int pZenb, String pIzen,
+			/*String pAbiz, String pSex, Date pData, String pZentr,
+			int pHospDago, String pNonBizi, String pOdol) throws SQLException, KonexioarenParamFaltaException {
+		Statement s = Konexioa.getKonexioa().createStatement();
+		String sql = "INSERT INTO gaixoa("+pNAN+","+pZenb+",'"+pIzen+"','"+pAbiz+"','"+pSex+"','"+pData.toString()+"','"+pZentr+"','"+pHospDago+"','"+pNonBizi+"','"+pOdol+"')";
+		s.executeUpdate(sql);*/ 
+			//TODO
+	}
+	
 	private boolean botikaGehitu(String pBotika) {
 		//TODO botika gehitu, true gauxatu baden
 		//false botika jada existitzen baden

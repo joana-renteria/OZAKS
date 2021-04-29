@@ -63,12 +63,11 @@ public class Erabiltzailea {
 			System.out.println("DosiKop: "+konts.getString("DOSIKOP"));
 			System.out.println("IraungiData: "+konts.getString("IRAUNGIDATA"));
 		}
-
-		System.out.println();
 		
 	}
 	
 	private boolean datuakAldatu() {
+		
 		return true;
 	}
 }
