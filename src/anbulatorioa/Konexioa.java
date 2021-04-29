@@ -69,4 +69,8 @@ public class Konexioa {
 		}
 	}
 	
+	private Statement createStatement() throws SQLException {
+		return konexioa.createStatement();
+	}
+	
 }

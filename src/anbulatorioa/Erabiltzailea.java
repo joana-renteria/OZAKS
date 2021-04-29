@@ -44,7 +44,8 @@ public class Erabiltzailea {
 		
 	}
 	
-	private boolean zitaEskatu() {
+	private void zitaEskatu() {
+		Statement s = Konexioa.getKonexioa().createStatements();
 		return true;
 	}
 	private void botikaInprimatu() {
