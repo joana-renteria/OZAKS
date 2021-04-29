@@ -15,6 +15,7 @@ public class Main {
 	private static Admin ad;
 	private static Erabiltzailea er;
 	private static String izena;
+	private static int nan;
 	private static Konexioa kx;
 	private static String helb = "localhost/anbulatorioa";
 	private static String erab = "admin";
@@ -26,7 +27,7 @@ public class Main {
 		String izena = rd.irakurri("Sartu erabiltzaile izena: ");
 		boolean denaOndo = false;
 		int saiakera = 3;
-		int kodea = 0;
+		int kodea = -1;
 		if(izena.equals("admin")) {
 			ad=Admin.getAdmin();
 			String pasa=rd.irakurri("Sartu pasahitza: ");
@@ -45,7 +46,17 @@ public class Main {
 			}
 			if (!denaOndo) {
 				System.out.println("Saiakera guztiak bukatu zaizkizu.");
-				kodea=-1;
+			}
+		} else {
+			try {
+				int nan = rd.irakurriInt("Sartu NANa: ");
+				ResultSet bIzen = Konexioa.getKonexioa().kontsulta("SELECT IZENA FROM GAIXOA WHERE NAN="+nan);
+				if(bIzen.next() && bIzen.getString(0).equals(izena)) {
+					kodea = 0;
+				}
+				//TODO SSZENB konprobatu
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 		return kodea;
@@ -59,10 +70,12 @@ public class Main {
 			ad = Admin.getAdmin();
 			ad.administratu();
 		} else if(lg == 0) {
-			er = Erabiltzailea.getErabil(izena);
+			er = Erabiltzailea.getErabil(izena, nan);
 			er.erabili();
 		} else System.exit(-1);
+		
 		System.exit(0);
+		
 	}
 
 }
