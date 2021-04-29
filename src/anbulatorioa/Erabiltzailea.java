@@ -45,12 +45,12 @@ public class Erabiltzailea {
 	}
 	
 	private void zitaEskatu() {
-		
+		Statement s = Konexioa.getKonexioa().createStatements();
 	}
 	private void botikaInprimatu() {
 		
 	}
-	private datuakAldatu() {
+	private void datuakAldatu() {
 		
 	}
 }
