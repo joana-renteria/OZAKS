@@ -23,7 +23,7 @@ public class Admin {
 		return (pPass.equals(pasahitza));
 	}
 
-	public void administratu() {
+	public void administratu() throws SQLException, KonexioarenParamFaltaException {
 		Reader rd= Reader.getReader();
 		System.out.println ("-----------------");
 		System.out.println ("1- Zita eman");
@@ -38,7 +38,11 @@ public class Admin {
 					zitaEman();
 					break;
 				case 2:
-					botikaBerria();
+					botikaEman(rd.irakurriInt("Botikaren kodea"),
+							rd.irakurriInt("Pazientearen NANa:"),
+							rd.irakurri("Botikaren marka:"),
+							rd.irakurri("Botikaren izena:"),
+							rd.irakurriInt("Dosi kopurua:"));
 					break;
 				case 3: 
 					datuakAldatu();
@@ -55,7 +59,7 @@ public class Admin {
 	public void zitaEman() {
 		
 	}
-	public void datuakAldatu() {
+	public void datuakAldatu() throws SQLException, KonexioarenParamFaltaException  {
 		Reader rd = Reader.getReader();
 		System.out.println ("-------GAIXOAREN ZEIN DATU----------");
 		System.out.println ("1- Hospitalean badago ");
@@ -88,21 +92,18 @@ public class Admin {
 		}
 	}
 	
-	private void gaixoaGehitu(int pNAN, int pZenb, String pIzen,
+	private boolean gaixoaGehitu(int pNAN, int pZenb, String pIzen,
 			String pAbiz, String pSex, Date pData, String pZentr,
 			int pHospDago, String pNonBizi, String pOdol) throws SQLException, KonexioarenParamFaltaException {
-		Statement s = Konexioa.getKonexioa().createStatement();
 		String sql = "INSERT INTO gaixoa("+pNAN+","+pZenb+",'"+pIzen+"','"+pAbiz+"','"+pSex+"','"+pData.toString()+"','"+pZentr+"','"+pHospDago+"','"+pNonBizi+"','"+pOdol+"')";
-		s.executeUpdate(sql);
+		return Konexioa.getKonexioa().aldaketa(sql);
 	}
 	
-	private void medikuaGehitu(int pNAN, int pZenb, String pIzen,
-			/*String pAbiz, String pSex, Date pData, String pZentr,
-			int pHospDago, String pNonBizi, String pOdol) throws SQLException, KonexioarenParamFaltaException {
-		Statement s = Konexioa.getKonexioa().createStatement();
-		String sql = "INSERT INTO gaixoa("+pNAN+","+pZenb+",'"+pIzen+"','"+pAbiz+"','"+pSex+"','"+pData.toString()+"','"+pZentr+"','"+pHospDago+"','"+pNonBizi+"','"+pOdol+"')";
-		s.executeUpdate(sql);*/ 
-			//TODO
+	private boolean medikuaGehitu(int pNAN, int pZenb, String pIzen,
+			String pAbiz, String pZentr, Date pData, int pFamili,
+			String pEspezial, int pTelf) throws SQLException, KonexioarenParamFaltaException {
+		String sql = "INSERT INTO medikua("+pNAN+","+pZenb+",'"+pIzen+"','"+pAbiz+"','"+pZentr+"','"+pData.toString()+"','"+pFamili+"','"+pEspezial+"','"+pTelf+"')";
+		return Konexioa.getKonexioa().aldaketa(sql);
 	}
 	
 	private boolean botikaGehitu(String pBotika) {
@@ -122,14 +123,15 @@ public class Admin {
 		return true;
 	}
 	
-	private boolean botikaEman() {
-		//TODO gaixoari botika eman
-		return true;
+	private boolean botikaEman(int pKodea, int pNan, String pMarka, String pBIzena,
+			int pDosiKop) throws SQLException, KonexioarenParamFaltaException {
+		String sql = "INSERT INTO botika(NULL,NULL,'"+pKodea+"','"+pBIzena+"','"+pMarka+"','"+pDosiKop+"')";
+		return Konexioa.getKonexioa().aldaketa(sql);
 	}
 	
-	private boolean botikaKendu() {
-		//TODO gaixoari botika kendu
-		return true;
+	private boolean botikaKendu(int pKodea, int pNan, String pBIzena) throws SQLException, KonexioarenParamFaltaException {
+		String sql = "DELETE FROM botika WHERE KODEA="+pKodea+",GAIXONAN="+pNan+",IZENA="+pBIzena;
+		return Konexioa.getKonexioa().aldaketa(sql);
 	}
 	
 }
