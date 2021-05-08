@@ -24,6 +24,17 @@ public class Admin {
 		return (pPass.equals(pasahitza));
 	}
 
+	public void gaixoaNAN() {
+		Reader rd= Reader.getReader();
+		int gaixNAN=rd.irakurriInt("Gaixoaren NAN sartu");
+		String sql = "SELECT COUNT(Gaixoa.*) FROM Gaixoa WHERE NAN="+gaixNAN";
+		if ()
+		System.out.println ("1- Gaixo berria sartu");
+		
+		System.out.println("");
+	}
+	
+	
 	public void administratu() throws SQLException, KonexioarenParamFaltaException {
 		Reader rd = Reader.getReader();
 		String[] auk = {"Zitak erakutsi","Zita eman","Botika eman",
