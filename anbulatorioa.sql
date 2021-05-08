@@ -1,13 +1,13 @@
--- MySQL dump 10.16  Distrib 10.1.48-MariaDB, for Linux (x86_64)
+-- MariaDB dump 10.18  Distrib 10.4.17-MariaDB, for Win64 (AMD64)
 --
 -- Host: localhost    Database: anbulatorioa
 -- ------------------------------------------------------
--- Server version	10.1.48-MariaDB
+-- Server version	10.4.17-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -39,8 +39,8 @@ CREATE TABLE `botika` (
   `DOSIKOP` float DEFAULT NULL,
   `IRAUNGIDATA` date DEFAULT NULL,
   PRIMARY KEY (`KODEA`),
-  KEY `GAIXONAN` (`GAIXONAN`,`SSZENB`),
-  CONSTRAINT `botika_ibfk_1` FOREIGN KEY (`GAIXONAN`, `SSZENB`) REFERENCES `gaixoa` (`NAN`, `SSZENB`)
+  KEY `GAIXONAN` (`GAIXONAN`),
+  CONSTRAINT `botika_ibfk_1` FOREIGN KEY (`GAIXONAN`) REFERENCES `gaixoa` (`NAN`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -62,7 +62,7 @@ DROP TABLE IF EXISTS `gaixoa`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `gaixoa` (
   `NAN` int(11) NOT NULL,
-  `SSZENB` int(11) NOT NULL,
+  `SSZENB` int(11) DEFAULT NULL,
   `IZENA` varchar(15) NOT NULL,
   `ABIZENA` varchar(15) DEFAULT NULL,
   `SEXUA` varchar(8) DEFAULT NULL,
@@ -71,8 +71,8 @@ CREATE TABLE `gaixoa` (
   `HOSPITALEANDAGO` tinyint(1) DEFAULT NULL,
   `NONBIZI` varchar(15) DEFAULT NULL,
   `ADINA` int(11) DEFAULT NULL,
-  `ODOLMOTA` varchar(3) DEFAULT NULL,
-  PRIMARY KEY (`NAN`,`SSZENB`)
+  PRIMARY KEY (`NAN`),
+  UNIQUE KEY `SSZENB` (`SSZENB`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -94,15 +94,16 @@ DROP TABLE IF EXISTS `medikua`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `medikua` (
   `NAN` int(11) NOT NULL,
-  `KOLEGIATUZENB` int(11) NOT NULL,
-  `IZENA` varchar(15) NOT NULL,
+  `KOLEGIATUZENB` int(11) DEFAULT NULL,
+  `IZENA` varchar(15) DEFAULT NULL,
   `ABIZENA` varchar(15) DEFAULT NULL,
   `ZENTROA` varchar(15) DEFAULT NULL,
   `JAIODATA` date DEFAULT NULL,
   `BADAFAMILIAKOMEDIKUA` tinyint(1) DEFAULT NULL,
   `ESPEZIALITATEA` varchar(15) DEFAULT NULL,
   `TELF` int(11) DEFAULT NULL,
-  PRIMARY KEY (`NAN`,`KOLEGIATUZENB`)
+  PRIMARY KEY (`NAN`),
+  UNIQUE KEY `KOLEGIATUZENB` (`KOLEGIATUZENB`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -131,10 +132,10 @@ CREATE TABLE `zita` (
   `ORDUA` time DEFAULT NULL,
   `LEKUA` varchar(15) DEFAULT NULL,
   `GELA` varchar(4) DEFAULT NULL,
-  KEY `MEDIKUNAN` (`MEDIKUNAN`,`KOLEGIATUZENB`),
-  KEY `GAIXONAN` (`GAIXONAN`,`SSZENB`),
-  CONSTRAINT `zita_ibfk_1` FOREIGN KEY (`MEDIKUNAN`, `KOLEGIATUZENB`) REFERENCES `medikua` (`NAN`, `KOLEGIATUZENB`),
-  CONSTRAINT `zita_ibfk_2` FOREIGN KEY (`GAIXONAN`, `SSZENB`) REFERENCES `gaixoa` (`NAN`, `SSZENB`)
+  KEY `MEDIKUNAN` (`MEDIKUNAN`),
+  KEY `GAIXONAN` (`GAIXONAN`),
+  CONSTRAINT `zita_ibfk_1` FOREIGN KEY (`MEDIKUNAN`) REFERENCES `medikua` (`NAN`),
+  CONSTRAINT `zita_ibfk_2` FOREIGN KEY (`GAIXONAN`) REFERENCES `gaixoa` (`NAN`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -156,4 +157,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-04-26 11:08:32
+-- Dump completed on 2021-05-06 13:09:25
