@@ -1,5 +1,8 @@
 package anbulatorioa;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Scanner;
 
 public class Reader {
@@ -27,10 +30,27 @@ public class Reader {
 		return emaitza;
 	}
 	
-	public int irakurriInt (String pMezua) {
+	public int irakurriInt(String pMezua) {
 		//TODO try and catch y eso
-		String ema= this.irakurri(pMezua);
-		int ema2=Integer.parseInt(ema);
+		String ema = this.irakurri(pMezua);
+		int ema2 = Integer.parseInt(ema);
 		return ema2;
+	}
+	
+	public Date irakurriData(String pMezua) {
+		//TODO
+		String ema = this.irakurri(pMezua);
+	}
+	
+	public int aukerak(String[] lista) {
+		System.out.println ("-----------------");
+		Iterator<String> itr = Arrays.asList(lista).iterator();
+		int i = 1;
+		while(itr.hasNext()) {
+			System.out.println(i+"- "+itr.next());
+			i++;
+		}
+		System.out.println ("-----------------");
+		return irakurriInt("Sartu zenbaki bat: ");
 	}
 }
