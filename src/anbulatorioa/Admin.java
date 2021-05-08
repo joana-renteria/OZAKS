@@ -23,8 +23,20 @@ public class Admin {
 		return (pPass.equals(pasahitza));
 	}
 
+	public void gaixoaNAN() {
+		Reader rd= Reader.getReader();
+		int gaixNAN=rd.irakurriInt("Gaixoaren NAN sartu");
+		String sql = "SELECT COUNT(Gaixoa.*) FROM Gaixoa WHERE NAN="+gaixNAN";
+		if ()
+		System.out.println ("1- Gaixo berria sartu");
+		
+		System.out.println("");
+	}
+	
+	
 	public void administratu() throws SQLException, KonexioarenParamFaltaException {
 		Reader rd= Reader.getReader();
+		//TODO HONEN AURRETIK GAIXOAREN NAN SARTU
 		System.out.println ("-----------------");
 		System.out.println ("1- Zita eman");
 		System.out.println ("2- Botika eman");
