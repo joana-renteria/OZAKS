@@ -20,7 +20,7 @@ public class Konexioa {
 		this.konektatu();
 	}
 	
-	public static Konexioa getKonexioa() throws KonexioarenParamFaltaException {
+	public static Konexioa getKonexioa() {
 		try {
 			if(helb == null ||
 					erab == null ||
@@ -79,6 +79,7 @@ public class Konexioa {
 			Statement s = this.konexioa.createStatement();
 			em = s.executeQuery(sql);
 		} catch (SQLException e) {
+			System.out.println("Txarto exekutatu da, konexioak hutsa egin du");
 			e.printStackTrace();
 			return null;
 		}
@@ -90,6 +91,7 @@ public class Konexioa {
 			Statement s = this.konexioa.createStatement();
 			s.executeUpdate(sql);
 		} catch (SQLException e) {
+			System.out.println("Txarto exekutatu da, konexioak hutsa egin du");
 			e.printStackTrace();
 			return false;
 		}
