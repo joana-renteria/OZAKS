@@ -55,9 +55,9 @@ public class Admin {
 				default:
 					System.out.println("Ez duzu ez B, ezta E idatzi");
 					break;
-				}
 			}
 		}
+  	}
 	
 	public void sartuNan() {
 		int n=0;
@@ -124,7 +124,6 @@ public class Admin {
 			}
 		} 
 		System.out.println("Saioa itxi da.");
-		
 	}
 	
 	public void zitak(int mNAN) {
@@ -185,8 +184,14 @@ public class Admin {
 		}
 	}
 	
+	private void erakutsiOnartuGabekoak(int mNAN) {
+		String sql = "SELECT GAIXON,DATA,ORDUA,LEKUA,GELA WHERE ONARTUA=0";
+		ResultSet konts = Konexioa.getKonexioa().kontsulta(sql);
+		Reader.getReader().kontsultaInprimatu(konts, "GAIXONAN,DATA,ORDUA,LEKUA,GELA");
+	}
+	
 	public boolean zitaEman(int mNAN) {
-		//TODO zita nuluak sortzeko aukera eman aka txandak
+		//datuak nuluak izan daitezke
 		Reader rd = Reader.getReader();
 		int gNAN = rd.sartuZenb(8, "NAN-eko");
 		Date zData = rd.irakurriData("Data: ");
@@ -208,6 +213,9 @@ public class Admin {
 	}
 	
 	private boolean txandaGeneratu(int mNAN, int egunak) {
+		// Hainbat egunetako txandak sortzen ditu
+		//8:00etatik 14:00era
+		//TODO ordutegi ezberdinak gehitu
 		boolean em = true;
 		String sql;
 		int i = 0;
@@ -240,8 +248,6 @@ public class Admin {
 			gaixoaGehitu(pNAN,pZenb,pIzen,pAbiz,pSex,pData,pZentr,pHospDago,pNonBizi,pOdol);
 		} if (aukera == 3) {
 			gaixoaKendu(rd.irakurriInt("Gaixoaren NAN: "));
-		} else {
-			
 		}
 	}
 	
@@ -341,21 +347,27 @@ public class Admin {
 	
 	private boolean botikaGehitu(int gaixoNAN, int sszenb, int kodea,
 			String pIzena, String marka, float dosiKop, Date iraungiData) {
-		//TODO botika gehitu, true gauxatu baden
-		//false botika jada existitzen baden
 		String sql = "INSERT INTO botika("+gaixoNAN+","+sszenb+","+kodea+","+pIzena+",'"+marka+"',"+dosiKop+","+iraungiData.toString()+"";
 		return Konexioa.getKonexioa().aldaketa(sql);
 	}
 	
-	private boolean botikaEzabatu(String pBotika) {
-		//TODO botika sistematik ezabatu
-		//ezabatzerakoan true bestela false
-		return true;
+	private boolean botikaEzabatu() {
+		Reader rd = Reader.getReader();
+		int pKodea = rd.irakurriInt("Botikaren kodea: ");
+		String sql = "DELETE FROM BOTIKA WHERE KODEA="+pKodea;
+		return Konexioa.getKonexioa().aldaketa(sql);
 	}
 	
-	private boolean botikaDago(String pBotika) {
-		//TODO botika dagoen konprobatu
-		return true;
+	private boolean botikaDago(int pKodea) {
+		String sql = "SELECT KODEA FROM BOTIKA WHERE KODEA="+pKodea;
+		ResultSet em = Konexioa.getKonexioa().kontsulta(sql);
+		try {
+			em.next();
+			if(em.getInt("KODEA") == (pKodea)) return true;
+		} catch (SQLException s) {
+			s.printStackTrace();
+		}
+		return false;
 	}
 	
 	private boolean botikaEman(int pKodea, int pNan, String pMarka,
