@@ -57,9 +57,6 @@ public class Admin {
 				}
 			}
 		}
-		System.out.println ("1- Gaixo berria sartu");
-		
-		System.out.println("");
 	}
 	
 	public void sartuNan() {
