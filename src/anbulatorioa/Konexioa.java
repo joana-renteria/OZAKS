@@ -73,6 +73,10 @@ public class Konexioa {
 		return konexioa.createStatement();
 	}
 	
+	public PreparedStatement preparedStatement (String lortu) throws SQLException {
+		return konexioa.prepareStatement(lortu);
+	}
+	
 	public ResultSet kontsulta(String sql) {
 		ResultSet em;
 		try {

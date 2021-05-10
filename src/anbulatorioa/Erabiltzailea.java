@@ -52,6 +52,8 @@ public class Erabiltzailea {
 	
 	private void zitaEskatu() throws SQLException, KonexioarenParamFaltaException {
 		//Statement s = Konexioa.getKonexioa().createStatement();
+		String current = 
+		String sql="SELECT DATA, ORDUA FROM MEDIKUA, ZITA WHERE MEDIKUNAN=NAN, GAIXONAN IS NULL, (DATA BETWEEN CURRENT_DATE AND ADDD_DATE(CURRENT_DATE+3))";
 	}
 	
 	private void botikaInprimatu() throws SQLException, KonexioarenParamFaltaException {

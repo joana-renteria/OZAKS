@@ -28,7 +28,7 @@ public class Main {
 		boolean denaOndo = false;
 		int saiakera = 3;
 		int kodea = -1;
-		if(izena.equals("admin")) {
+		if(izena.equals("admin")||izena.equals("Admin")) {
 			ad=Admin.getAdmin();
 			String pasa=rd.irakurri("Sartu pasahitza: ");
 			while (!denaOndo && saiakera > 1) {

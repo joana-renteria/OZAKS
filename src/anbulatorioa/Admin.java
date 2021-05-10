@@ -2,6 +2,7 @@ package anbulatorioa;
 
 import java.sql.SQLException;
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Time;
@@ -25,6 +26,68 @@ public class Admin {
 		return (pPass.equals(pasahitza));
 	}
 
+	public void gaixoaEzDago(int pNAN) throws SQLException, KonexioarenParamFaltaException {
+		boolean denaOndo=false;
+		Reader rd =Reader.getReader();
+				System.out.println("Sartutako NAN duen gaixorik ez dago");
+				System.out.println("NAN hori duen gaixo berriaren datuak sartu nahi duzu?");
+				char karak=rd.irakurriChar("Bai (B) edo ez (E) sakatu");
+				while (!denaOndo) {
+					switch (karak) {
+						case 'B':
+							int pZenb=rd.sartuZenb(12, "seguritate sozialeko");
+							String pIzen=rd.sartuLetraLarriXehe("izena");
+							String pAbiz=rd.sartuLetraLarriXehe("abizena");
+							char pSex=rd.sartuSex();
+							String pData=rd.sartuJaioData();
+							String pZentr=rd.sartuLetraLarriXehe("zentroa");
+							int pHosDago= rd.sartuBoolean() ;
+							String pNonBizi =rd.sartuLetraLarriXehe("bizi lekua");
+							int pAdina=rd.adinaKalkulatu();
+							int pTelf= rd.sartuZenb(9, "telefonoko");
+							this.gaixoaGehitu(pNAN, pZenb, pIzen, pAbiz, pSex, pData, pZentr, pHosDago, pNonBizi, pAdina, pTelf);
+							denaOndo=true;
+							break;
+						case 'E':
+							this.sartuNan();
+							denaOndo=true;
+							break;
+						default:
+							System.out.println("Ez duzu ez B, ezta E idatzi");
+							break;
+				}
+			}
+		}
+	}
+	
+	public void sartuNan() {
+		int n=0;
+		boolean ondoDago=false;
+		Reader rd= Reader.getReader();
+		int gaixNAN=rd.irakurriInt("Gaixoaren NAN sartu");
+		String x= Integer.toString(gaixNAN);
+		do{
+			try{
+				if (x.length()!=8) {
+					throw new TamainaExc();
+				}
+				String sql = "SELECT COUNT(Gaixoa.*) FROM Gaixoa WHERE NAN="+gaixNAN;
+					//PreparedStatement st= Konexioa.getKonexioa().preparedStatement(sql);
+				ResultSet zenbat=Konexioa.getKonexioa().kontsulta(sql);
+				if (zenbat.next()) {
+					n=zenbat.getInt(1);
+				}if (n!=1) {
+					this.gaixoaEzDago(gaixNAN);
+				}else {
+					this.administratu();
+				}
+				ondoDago=true;
+			}catch (TamainaExc e) {
+				e.inprimatu("NAN", 8);
+			}
+		} while (!ondoDago);
+	}
+	
 	public void administratu() throws SQLException, KonexioarenParamFaltaException {
 		Reader rd = Reader.getReader();
 		String[] auk = {"Zitak administratu","Botika eman",
@@ -235,9 +298,9 @@ public class Admin {
 	}
 
 	private boolean gaixoaGehitu(int pNAN, int pZenb, String pIzen,
-			String pAbiz, String pSex, Date pData, String pZentr,
-			int pHospDago, String pNonBizi, String pOdol) {
-		String sql = "INSERT INTO gaixoa("+pNAN+","+pZenb+",'"+pIzen+"','"+pAbiz+"','"+pSex+"','"+pData.toString()+"','"+pZentr+"','"+pHospDago+"','"+pNonBizi+"','"+pOdol+"')";
+			String pAbiz, char pSex, String pData, String pZentr,
+			int pHospDago, String pNonBizi,int pAdina, int pTelf) throws SQLException, KonexioarenParamFaltaException {
+		String sql = "INSERT INTO gaixoa VALUES ("+pNAN+","+pZenb+",'"+pIzen+"','"+pAbiz+"','"+pSex+"','"+pData.toString()+"','"+pZentr+"','"+pHospDago+"','"+pNonBizi+"','"+pAdina+"','"+pTelf+"')";
 		return Konexioa.getKonexioa().aldaketa(sql);
 	}
 	
@@ -282,5 +345,8 @@ public class Admin {
 		String sql = "DELETE FROM botika WHERE KODEA="+pKodea+",GAIXONAN="+pNan+",IZENA="+pBIzena;
 		return Konexioa.getKonexioa().aldaketa(sql);
 	}
+	
+	
+	
 	
 }
