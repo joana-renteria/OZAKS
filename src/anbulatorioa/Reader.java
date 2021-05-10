@@ -73,7 +73,7 @@ public class Reader {
 		String pIzen="NULL";
 		do {
 			try {
-				pIzen=this.irakurri("Sartu gaixoaren"+pMota+":");
+				pIzen=this.irakurri("Sartu gaixoaren "+pMota+":");
 				char [] zuzena=pIzen.toCharArray();
 				if (Character.isLowerCase(zuzena[0])) {
 					throw new LetraLarriXeheExc();
@@ -100,7 +100,7 @@ public class Reader {
 		int pZenb=-1;
 		do{
 			try {
-				pZenb=this.irakurriInt("Sartu gaixoaren"+pMota+" zenbakia:");
+				pZenb=this.irakurriInt("Sartu "+pMota+" zenbakia:");
 				String x=Integer.toString(pZenb);
 				if (x.length()!=pTamaina) {
 					throw new TamainaExc();

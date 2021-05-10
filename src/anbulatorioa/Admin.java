@@ -234,18 +234,18 @@ public class Admin {
 	private void datuakAdministratu(int aukera) {
 		Reader rd = Reader.getReader();
 		if(aukera == 2) {
-			int pNAN = rd.
-			//rd.irakurriInt("Gaixoaren NAN: ");
-			int pZenb = rd.irakurriInt("Sekuritate Soziala: ");
-			String pIzen = rd.irakurri("Izena: ");
-			String pAbiz = rd.irakurri("Abizena: ");
-			Char pSex = rd.irakurriChar("Generoa")rd.irakurri("Generoa: ");
-			String pData = rd.irakurri("Jaiotze data (UUUU-HH-EE): "); //TODO
+			int pNAN = rd.sartuZenb(8, "NAN");
+			int pZenb = rd.sartuZenb(9, "Sekuritate Soziala");
+			String pIzen = rd.sartuLetraLarriXehe("Izena");
+			String pAbiz = rd.sartuLetraLarriXehe("Abizena");
+			char pSex = rd.sartuSex();
+			String pData = rd.sartuJaioData();
 			String pZentr = rd.irakurri("Zentroa: ");
 			int pHospDago = rd.irakurriInt("Hospitalean dago (1 bai) (0 ez): ");
 			String pNonBizi = rd.irakurri("Udalerria: ");
-			String pOdol = rd.irakurri("Odol mota: ");
-			gaixoaGehitu(pNAN,pZenb,pIzen,pAbiz,pSex,pData,pZentr,pHospDago,pNonBizi,pOdol);
+			int pAdina = rd.adinaKalkulatu();
+			int pTelf = rd.sartuZenb(9, "Sekuritate Soziala");
+			gaixoaGehitu(pNAN,pZenb,pIzen,pAbiz,pSex,pData,pZentr,pHospDago,pNonBizi,pAdina,pTelf);
 		} if (aukera == 3) {
 			gaixoaKendu(rd.irakurriInt("Gaixoaren NAN: "));
 		}
@@ -328,7 +328,7 @@ public class Admin {
 
 	private boolean gaixoaGehitu(int pNAN, int pZenb, String pIzen,
 			String pAbiz, char pSex, String pData, String pZentr,
-			int pHospDago, String pNonBizi,int pAdina, int pTelf) throws SQLException, KonexioarenParamFaltaException {
+			int pHospDago, String pNonBizi ,int pAdina, int pTelf) {
 		String sql = "INSERT INTO gaixoa VALUES ("+pNAN+","+pZenb+",'"+pIzen+"','"+pAbiz+"','"+pSex+"','"+pData.toString()+"','"+pZentr+"','"+pHospDago+"','"+pNonBizi+"','"+pAdina+"','"+pTelf+"')";
 		return Konexioa.getKonexioa().aldaketa(sql);
 	}
