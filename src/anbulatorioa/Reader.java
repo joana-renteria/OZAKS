@@ -1,5 +1,7 @@
 package anbulatorioa;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.Period;
@@ -7,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.sql.Time;
 import java.util.Iterator;
 import java.util.Scanner;
 
@@ -207,8 +210,15 @@ public class Reader {
 	}
 
 	public Date irakurriData(String pMezua) {
-		//TODO
-		String ema = this.irakurri(pMezua);
+			String irak = this.irakurri(pMezua);
+			Date ema = Date.valueOf(irak);
+			return ema;
+	}
+	
+	public Time irakurriOrdua(String pMezua) {
+		String irak = this.irakurri(pMezua);
+		Time ema = Time.valueOf(irak);
+		return ema;
 	}
 	
 	public int aukerak(String[] lista) {
