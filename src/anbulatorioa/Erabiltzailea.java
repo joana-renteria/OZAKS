@@ -1,8 +1,10 @@
 package anbulatorioa;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
 
 public class Erabiltzailea {
 	private static Erabiltzailea nireErabil = null;
@@ -50,22 +52,31 @@ public class Erabiltzailea {
 		
 	}
 	
-	private void zitaEskatu() throws SQLException, KonexioarenParamFaltaException {
-		//Statement s = Konexioa.getKonexioa().createStatement();
-		String current = 
-		String sql="SELECT DATA, ORDUA FROM MEDIKUA, ZITA WHERE MEDIKUNAN=NAN, GAIXONAN IS NULL, (DATA BETWEEN CURRENT_DATE AND ADDD_DATE(CURRENT_DATE+3))";
+	private void zitaEskatu() {
+		Reader rd = Reader.getReader();
+		int i = 0;
+		while(i < 3) {
+			i++;
+			String sql = "SELECT DATA, ORDUA FROM MEDIKUA, ZITA WHERE MEDIKUNAN=NAN, GAIXONAN IS NULL, (DATA BETWEEN CURRENT_DATE AND ADD_DATE(CURRENT_DATE+"+i+"))";
+			ResultSet konts = Konexioa.getKonexioa().kontsulta(sql);
+			rd.kontsultaInprimatu(konts,"DATA,ORDUA");
+		}
+		String[] auk = {"Jarraitu","Irten"};
+		int zenb = rd.aukerak(auk);
+		if (zenb == 1) {
+			Date zData = rd.irakurriData("Data: ");
+			Time zOrdua = rd.irakurriOrdua("Ordua: ");
+			int mNAN = rd.irakurriInt("Medikua (NAN): ");
+			String sql = "UPDATE ZITA SET GAIXONAN="+nan+", ONARTUA=0 WHERE DATA="+zData
+					+" AND ORDUA="+zOrdua+" AND MEDIKUNAN="+mNAN;
+			Konexioa.getKonexioa().aldaketa(sql);
+		}
 	}
 	
-	private void botikaInprimatu() throws SQLException, KonexioarenParamFaltaException {
+	private void botikaInprimatu() {
 		String sql = "SELECT IZENA, MARKA, DOSIKOP, IRAUNGIDATA FROM BOTIKA WHERE GAIXONAN="+nan;
 		ResultSet konts = Konexioa.getKonexioa().kontsulta(sql);
-		while (konts.next()) {
-			System.out.println("Izena: "+konts.getString("IZENA"));
-			System.out.println("Marka: "+konts.getString("MARKA"));
-			System.out.println("DosiKop: "+konts.getString("DOSIKOP"));
-			System.out.println("IraungiData: "+konts.getString("IRAUNGIDATA"));
-		}
-		
+		Reader.getReader().kontsultaInprimatu(konts, "IZENA,MARKA,DOSIKOP,IRAUNGIDATA");
 	}
 	
 	private boolean datuakAldatu() {

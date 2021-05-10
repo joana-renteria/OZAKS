@@ -3,6 +3,8 @@ package anbulatorioa;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
@@ -232,5 +234,29 @@ public class Reader {
 		System.out.println ("-----------------");
 		return irakurriInt("Sartu zenbaki bat: ");
 
+	}
+
+	public void kontsultaInprimatu(ResultSet konts, String zutabeIzen) {
+		String[] z = zutabeIzen.split(",");
+		int i;
+		try {
+			System.out.println();
+			i = 0;
+			while(i <= z.length) {
+				System.out.print(z[i]+"\t");
+				i++;
+			}
+			System.out.println("-------------------------------------------------------------------------------");
+			while(konts.next()) {
+				i = 0;
+				while(i <= z.length) {
+					System.out.print(konts.getString(i)+"\t");
+					i++;
+				}
+			}
+		} catch (SQLException e) {
+			System.out.println("Emaitzak jasotzen errorea");
+			e.printStackTrace();
+		}
 	}
 }
