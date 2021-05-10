@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.Time;
 
 public class Admin {
 	private String pasahitza = "db";
@@ -26,22 +27,22 @@ public class Admin {
 
 	public void administratu() throws SQLException, KonexioarenParamFaltaException {
 		Reader rd = Reader.getReader();
-		String[] auk = {"Zitak erakutsi","Zita eman","Botika eman",
+		String[] auk = {"Zitak administratu","Botika eman",
 				"Gaixoen datuak administratu","Exit"};
 		int zenb = rd.aukerak(auk);
 		while (zenb != 4) {
 			switch (zenb) {
-				case 1: 
-					zitaEman();
+				case 2: 
+					zitak(rd.irakurriInt("Medikuaren NAN: "));
 					break;
-				case 2:
+				case 3:
 					botikaEman(rd.irakurriInt("Botikaren kodea"),
 							rd.irakurriInt("Pazientearen NANa:"),
 							rd.irakurri("Botikaren marka:"),
 							rd.irakurri("Botikaren izena:"),
 							rd.irakurriInt("Dosi kopurua:"));
 					break;
-				case 3:
+				case 4:
 					String[] auk2 = {"Paziente baten datuak aldatu","Pazientea gehitu",
 							"Pazientea ezabatu","Atzera itzuli"};
 					int zenb2 = rd.aukerak(auk2);
@@ -60,11 +61,84 @@ public class Admin {
 		
 	}
 	
-	public void zitaEman() {
-		String[] auk = {};
+	public void zitak(int mNAN) {
+		Reader rd = Reader.getReader();
+		String[] auk = {"Zitak erakutsi","Zita eman",
+				"Zita bat ezabatu","Atzera"};
+		int zenb = rd.aukerak(auk);
+		while (zenb != 4) {
+			switch (zenb) {
+				case 1:
+					zitakErakutsi(mNAN);
+					break;
+				case 2:
+					zitaEman(mNAN);
+					break;
+				case 3:
+					zitaEzabatu(mNAN);
+					break;
+				default:
+					System.out.println("Saiatu berriro");
+			}
+		}
 	}
 	
-	public void datuakAdministratu(int aukera) {
+	private void zitakErakutsi(int mNAN) {
+		String sql = "SELECT GAIXONAN,DATA,ORDUA,LEKUA,GELA FROM ZITA WHERE MEDIKUANAN="+mNAN;
+		ResultSet em = Konexioa.getKonexioa().kontsulta(sql);
+		try {
+			System.out.println();
+			System.out.println("| Gaixoa \t| Data  \t| Ordua \t| Lekua \t| Gela");
+			System.out.println("-------------------------------------------------------------------------------");
+			while(em.next()) {
+				System.out.println(em.getString("GAIXONAN")+"\t"+
+						em.getString("DATA")+"\t"+em.getString("ORDUA")+"\t"+
+						em.getString("LEKUA")+"\t"+em.getString("GELA"));
+			}
+		} catch (SQLException e) {
+			System.out.println("Emaitzak jasotzen errorea");
+			e.printStackTrace();
+		}
+	}
+	
+	public boolean zitaEman(int mNAN) {
+		//TODO zita nuluak sortzeko aukera eman aka txandak
+		Reader rd = Reader.getReader();
+		int gNAN = rd.irakurriInt("Gaixoaren NANa: ");
+		Date zData = rd.irakurriData("Data: ");
+		Time zOrdua = rd.irakurriOrdua("Ordua: ");
+		String zLekua = rd.irakurri("Lekua: ");
+		String zGela = rd.irakurri("String gela: ");
+		String sql = "INSERT INTO ZITA ('"+mNAN+"',"+"'NULL'"+",'"+gNAN+"','NULL','"+zData+"','"+zOrdua+"','"+zLekua+"','"+zGela+"')";
+		return Konexioa.getKonexioa().aldaketa(sql);
+	}
+	
+	public boolean zitaEzabatu(int mNAN) {
+		Reader rd = Reader.getReader();
+		int gNAN = rd.irakurriInt("Gaixoaren NANa: ");
+		Date zData = rd.irakurriData("Data: ");
+		Time zOrdua = rd.irakurriOrdua("Ordua: ");
+		String sql = "DELTE FROM ZITA WHERE GAIXONAN = "+gNAN+" AND DATA = "+zData.toString()+" AND zOrdua = "+zOrdua.toString();
+		return Konexioa.getKonexioa().aldaketa(sql);
+	}
+	
+	private boolean txandaGeneratu(int mNAN, int egunak) {
+		boolean em = true;
+		String sql;
+		int i = 0;
+		int zOrdua = 8;
+		while(i != egunak || em) {
+			i++;
+			while(zOrdua < 14 || em) {
+				sql = "INSERT INTO ZITA (MEDIKUNAN,DATA,ORDUA) VALUES('"+mNAN+"',DATEADD(day,"+i+",CURRENT_DATE,'"+zOrdua+"')";
+				em = Konexioa.getKonexioa().aldaketa(sql);
+				zOrdua++;
+			}
+		}
+		return em;
+	}
+	
+	private void datuakAdministratu(int aukera) {
 		Reader rd = Reader.getReader();
 		if(aukera == 2) {
 			int pNAN = rd.irakurriInt("Gaixoaren NAN: ");
@@ -80,10 +154,12 @@ public class Admin {
 			gaixoaGehitu(pNAN,pZenb,pIzen,pAbiz,pSex,pData,pZentr,pHospDago,pNonBizi,pOdol);
 		} if (aukera == 3) {
 			gaixoaKendu(rd.irakurriInt("Gaixoaren NAN: "));
-		} else break;
+		} else {
+			
+		}
 	}
 	
-	public void datuakAldatu() throws SQLException, KonexioarenParamFaltaException  {
+	private void datuakAldatu() throws SQLException, KonexioarenParamFaltaException  {
 		Reader rd = Reader.getReader();
 		int gNAN = rd.irakurriInt("Pazientearen NANa: ");
 		System.out.println ("\n-------GAIXOAREN ZEIN DATU----------");
