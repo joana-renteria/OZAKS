@@ -123,6 +123,9 @@ public class Admin {
 	}
 	
 	private boolean txandaGeneratu(int mNAN, int egunak) {
+		// Hainbat egunetako txandak sortzen ditu
+		//8:00etatik 14:00era
+		//TODO ordutegi ezberdinak gehitu
 		boolean em = true;
 		String sql;
 		int i = 0;
