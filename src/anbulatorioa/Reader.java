@@ -105,7 +105,7 @@ public class Reader {
 			}
 			denaOndo=true;
 			}catch(TamainaExc e) {
-				e.inprimatu("Seguritate sozialeko",12);
+				e.inprimatu(pMota,12);
 			}
 		}while (!denaOndo);
 		denaOndo=false;
@@ -210,9 +210,9 @@ public class Reader {
 	}
 
 	public Date irakurriData(String pMezua) {
-			String irak = this.irakurri(pMezua);
-			Date ema = Date.valueOf(irak);
-			return ema;
+		String irak = this.irakurri(pMezua);
+		Date ema = Date.valueOf(irak);
+		return ema;
 	}
 	
 	public Time irakurriOrdua(String pMezua) {
