@@ -59,11 +59,11 @@ public class Erabiltzailea {
 		//Statement s = Konexioa.getKonexioa().createStatement();
 		
 		String sql="SELECT DATA, ORDUA FROM MEDIKUA, ZITA WHERE MEDIKUNAN=NAN AND GAIXONAN IS NULL AND (DATA BETWEEN CURRENT_DATE AND ADDD_DATE(CURRENT_DATE+3))";
-		
+		//TODO: Ez dago bukatuta
 	}
 	
 	private void erakutsiZitak(int gNAN) throws KonexioarenParamFaltaException, SQLException {
-		if (Reader.getReader().gaixoaNanBadago(gNAN)) {
+		if (Reader.getReader().gaixoaNan()!=-1) {
 			String sql = "SELECT MEDIKU.IZENA, MEDIKUA.ABIZENA, GAIXOA.IZENA, GAIXOA.ABIZENA,DATA,"
 					+ "ORDUA,LEKUA,GELA FROM ZITA, MEDIKUA, GAIXOA WHERE MEDIKUANAN=NAN AND DATA>=CURRENT_DATE "
 					+ "AND LEKUA=ZENTROA AND GAIXOA.NAN=GAIXONAN AND GAIXONAN="+gNAN;
@@ -110,9 +110,48 @@ public class Erabiltzailea {
 	}
 	
 	private void datuakAldatu() {
-		
-		
+		Reader rd = Reader.getReader();
+		int gNAN = rd.gaixoaNan();
+		if (gNAN!=-1) {
+			System.out.println ("\n-------ZEIN DATU ALDATU NAHI DUZU----------");
+			String[] auk = {"Ohiko zentroa","Telefono",
+					"Non bizi","Bueltatu lehengo menura"};
+			int zenb = rd.aukerak(auk);
+			while (zenb != 7) {
+				switch (zenb) {
+					case 1:
+						zentroAldatu(gNAN, rd.sartuLetraLarriXehe("zentro berriaren izena"));
+						break;
+					case 2:
+						tlfAldatu(gNAN, rd.sartuZenb(9, "telefono berriaren "));
+						break;
+					case 3:
+						udalerriAldatu(gNAN,rd.sartuLetraLarriXehe("udalerriaren izena: "));
+						break;
+					case 4:
+						erabili();
+						break;
+					default:
+						System.out.println("Saiatu berriro.");
+						break;
+				}
+			} 			
+		}
 	}
 	
+	private boolean zentroAldatu(int pNAN, String zentroberria) {
+		String sql = "UPDATE GAIXOA SET OHIKOZENTROA = "+zentroberria+" WHERE NAN = "+pNAN;
+		return Konexioa.getKonexioa().aldaketa(sql);
+	}
+
+	private boolean udalerriAldatu(int pNAN, String udalerri) {
+		String sql = "UPDATE GAIXOA SET NONBIZI = "+udalerri+" WHERE NAN = "+pNAN;
+		return Konexioa.getKonexioa().aldaketa(sql);
+	}
+
+	private boolean tlfAldatu(int pNAN, int tlf) {
+		String sql = "UPDATE GAIXOA SET TELEFONO = "+tlf+" WHERE NAN = "+pNAN;
+		return Konexioa.getKonexioa().aldaketa(sql);
+	}
 	
 }

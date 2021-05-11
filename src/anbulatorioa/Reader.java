@@ -137,31 +137,34 @@ public class Reader {
 	
 	//KONPROBATU DATE MODUAN EDO STRING MODUAN BALIO DUEN
 	
-	private String sartuJaioData() {
-		int urtea=this.itzuliUrtea("Sartu pazientea jaiotako urtea");
-		int hilab=this.itzuliHilabetea("Sartu pazientea jaiotako hilabetea");
-		int eguna=this.itzuliEguna(hilab, urtea, "Sartu pazientea jaiotako eguna");
+	private String sartuData(String pMezua1, String pMezua2, String pMezua3,int min, int max) {
+		int urtea=this.irakurriIntTarte(pMezua1,min, max);
+		int hilab=this.itzuliHilabetea(pMezua2);
+		int eguna=this.itzuliEguna(hilab, urtea, pMezua3);
 		return urtea+"-"+hilab+"-"+eguna;
 	}
 	
-	public int adinaKalkulatu() {
-		int urtea=this.itzuliUrtea("Sartu pazientea jaiotako urtea");
-		int hilab=this.itzuliHilabetea("Sartu pazientea jaiotako hilabetea");
-		int eguna=this.itzuliEguna(hilab, urtea,"Sartu paizentea jaiotako eguna");
+	
+	public int adinaKalkulatu(Date data) {
+		String jaioData=data.toString();
+		int urtea= Integer.parseInt(jaioData.substring(0, 4));
+		int hilab=Integer.parseInt(jaioData.substring(5, 7));
+		int eguna=Integer.parseInt(jaioData.substring(8, 10));
 		DateTimeFormatter fmt= DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		LocalDate jaioData=LocalDate.parse(eguna+"/"+hilab+"/"+urtea, fmt);
+		LocalDate jaiotzeData=LocalDate.parse(eguna+"/"+hilab+"/"+urtea, fmt);
 		LocalDate unekoa=LocalDate.now();
-		Period periodo=Period.between (jaioData, unekoa);
+		Period periodo=Period.between (jaiotzeData, unekoa);
 		return periodo.getYears();
 	}
 	
-	private int itzuliUrtea(String pMezua) {
+	public int itzuliUnekoUrtea() {
 		Date data = new Date(0);
 		Calendar egutegia=Calendar.getInstance();
 		egutegia.setTime(data);
 		int unekoData= egutegia.get(Calendar.YEAR);
-		return this.irakurriIntTarte(pMezua, unekoData-130, unekoData);
+		return unekoData;
 	}
+	
 	
 	private int itzuliHilabetea(String pMezua) {
 		return this.irakurriIntTarte(pMezua, 01, 12);
@@ -213,11 +216,12 @@ public class Reader {
 		return i;
 	}
 
-	public Date irakurriData() {
-		String irak = sartuJaioData();
+	public Date irakurriData(String pMe1, String pMe2, String pMe3,int min, int max) {
+		String irak = sartuData(pMe1, pMe2, pMe3, min,max);
 		Date ema = Date.valueOf(irak);
 		return ema;
 	}
+	
 	
 	public Time irakurriOrdua(String pMezua) {
 		String irak = this.irakurri(pMezua);
@@ -238,12 +242,12 @@ public class Reader {
 
 	}
 	
-	public boolean gaixoaNanBadago(int gNAN) {
-		int n=0, saiakerak=3;
+	public int gaixoaNan() {
+		int n=0, saiakerak=3, emaitza=this.sartuZenb(8, "pazientearen NAN ");
 		boolean ondoDago=false;
 		do{
 			try{
-				String sql = "SELECT COUNT(GAIXOA.*) FROM GAIXOA WHERE NAN="+gNAN;
+				String sql = "SELECT COUNT(GAIXOA.*) FROM GAIXOA WHERE NAN="+emaitza;
 				ResultSet zenbat=Konexioa.getKonexioa().kontsulta(sql);
 				if (zenbat.next()) {
 					n = zenbat.getInt(1);
@@ -253,14 +257,16 @@ public class Reader {
 				ondoDago=true;
 			} catch (DatuaOkerExc e) {
 				e.inprimatu("gaixoaren NAN");
+				emaitza=this.sartuZenb(8, "pazientearen NAN");
 				saiakerak--;
 			} catch (SQLException s) {
 				s.printStackTrace();
 			}
 		} while (!ondoDago &&saiakerak>0);
 		if (!ondoDago) {
+			emaitza=-1;
 			System.out.println("NAN sartzeko aukerak bukatu zaizkizu");
 		}
-		return ondoDago;
+		return emaitza;
 	}
 }
