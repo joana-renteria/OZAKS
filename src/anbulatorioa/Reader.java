@@ -1,7 +1,6 @@
 package anbulatorioa;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,7 +8,6 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.sql.Time;
 import java.util.Iterator;
@@ -50,6 +48,12 @@ public class Reader {
 		return ema2;
 	}
 	
+	public float irakurriFloat(String pMezua) {
+		String ema = this.irakurri(pMezua);
+		float ema2 = Float.parseFloat(ema);
+		return ema2;
+	}
+	
 	public int irakurriIntTarte (String pMezua, int min, int max) {
 		boolean denaOndo=false;
 		int pZenb=0;
@@ -73,7 +77,7 @@ public class Reader {
 		String pIzen="NULL";
 		do {
 			try {
-				pIzen=this.irakurri("Sartu gaixoaren "+pMota+":");
+				pIzen=this.irakurri("Sartu pazientearen"+pMota+":");
 				char [] zuzena=pIzen.toCharArray();
 				if (Character.isLowerCase(zuzena[0])) {
 					throw new LetraLarriXeheExc();
@@ -107,7 +111,7 @@ public class Reader {
 			}
 			denaOndo=true;
 			}catch(TamainaExc e) {
-				e.inprimatu(pMota,12);
+				e.inprimatu(pMota,pTamaina);
 			}
 		}while (!denaOndo);
 		denaOndo=false;
@@ -119,7 +123,7 @@ public class Reader {
 		char pSex='A';
 		while (!denaOndo) {
 			try {
-				pSex=this.irakurriChar("Zein da gaixoaren sexua? E(emakumea), G(gizona) edo X(ez bitarra)");
+				pSex=this.irakurriChar("Zein da gaixoaren genero marka? [E/G/X]");
 				if (pSex!='E'|| pSex!='G'|| pSex!='X') {
 					throw new SexuaGaizExc();
 				}
@@ -131,47 +135,48 @@ public class Reader {
 		return pSex;
 	}
 	
-	public String sartuJaioData() {
-		int urtea=this.itzuliUrtea();
-		int hilab=this.itzuliHilabetea();
-		int eguna=this.itzuliEguna(hilab, urtea);
+	//KONPROBATU DATE MODUAN EDO STRING MODUAN BALIO DUEN
+	
+	private String sartuData(String pMezua1, String pMezua2, String pMezua3,int min, int max) {
+		int urtea=this.irakurriIntTarte(pMezua1,min, max);
+		int hilab=this.itzuliHilabetea(pMezua2);
+		int eguna=this.itzuliEguna(hilab, urtea, pMezua3);
 		return urtea+"-"+hilab+"-"+eguna;
 	}
 	
-	public int adinaKalkulatu() {
-		int urtea=this.itzuliUrtea();
-		int hilab=this.itzuliHilabetea();
-		int eguna=this.itzuliEguna(hilab, urtea);
+	
+	public int adinaKalkulatu(Date data) {
+		String jaioData=data.toString();
+		int urtea= Integer.parseInt(jaioData.substring(0, 4));
+		int hilab=Integer.parseInt(jaioData.substring(5, 7));
+		int eguna=Integer.parseInt(jaioData.substring(8, 10));
 		DateTimeFormatter fmt= DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		LocalDate jaioData=LocalDate.parse(eguna+"/"+hilab+"/"+urtea, fmt);
+		LocalDate jaiotzeData=LocalDate.parse(eguna+"/"+hilab+"/"+urtea, fmt);
 		LocalDate unekoa=LocalDate.now();
-		Period periodo=Period.between (jaioData, unekoa);
+		Period periodo=Period.between (jaiotzeData, unekoa);
 		return periodo.getYears();
 	}
 	
-	private int itzuliUrtea() {
-		Date data = new Date(0, 0, 0);
+	public int itzuliUnekoUrtea() {
+		Date data = new Date(0);
 		Calendar egutegia=Calendar.getInstance();
 		egutegia.setTime(data);
 		int unekoData= egutegia.get(Calendar.YEAR);
-		String pMezua="Sartu gaixoa jaiotako urtea";
-		int urtea=this.irakurriIntTarte(pMezua, unekoData-130, unekoData);
-		return urtea;
+		return unekoData;
 	}
 	
-	private int itzuliHilabetea() {
-		String pMezua="Sartu gaixoa jaiotako hilabetea";
-		int hilab=this.irakurriIntTarte(pMezua, 01, 12);
-		return hilab;
+	
+	private int itzuliHilabetea(String pMezua) {
+		return this.irakurriIntTarte(pMezua, 01, 12);
 	}
 	
-	private int itzuliEguna(int hilab, int urtea) {
+	private int itzuliEguna(int hilab, int urtea, String pMezua) {
 		boolean denaOndo=false;
 		int[] egunaHil= {31,28,31,30,31,30,31,31,30,31,30,31};
 		int pMax=0, eguna=0;
 		while (!denaOndo) {
 			try{
-				eguna=this.irakurriInt("Sartu gaixoa jaiotako eguna");
+				eguna=this.irakurriInt(pMezua);
 				int i=1;
 				while (i<hilab) {
 					i++;
@@ -191,8 +196,8 @@ public class Reader {
 		return eguna;
 	}
 	
-	public int sartuBoolean () {
-		String pEmaitza =this.irakurri("Gaixoa hospitalean dago? true edo false sartu");
+	public int sartuBoolean (String pMezua) {
+		String pEmaitza =this.irakurri(pMezua+" true edo false sartu");
 		int i=0;
 		boolean denaOndo=false;
 		while (!denaOndo) {
@@ -211,11 +216,12 @@ public class Reader {
 		return i;
 	}
 
-	public Date irakurriData(String pMezua) {
-		String irak = this.irakurri(pMezua);
+	public Date irakurriData(String pMe1, String pMe2, String pMe3,int min, int max) {
+		String irak = sartuData(pMe1, pMe2, pMe3, min,max);
 		Date ema = Date.valueOf(irak);
 		return ema;
 	}
+	
 	
 	public Time irakurriOrdua(String pMezua) {
 		String irak = this.irakurri(pMezua);
@@ -235,6 +241,34 @@ public class Reader {
 		return irakurriInt("Sartu zenbaki bat: ");
 
 	}
+	
+	public int gaixoaNan() {
+		int n=0, saiakerak=3, emaitza=this.sartuZenb(8, "pazientearen NAN ");
+		boolean ondoDago=false;
+		do{
+			try{
+				String sql = "SELECT COUNT(GAIXOA.*) FROM GAIXOA WHERE NAN="+emaitza;
+				ResultSet zenbat=Konexioa.getKonexioa().kontsulta(sql);
+				if (zenbat.next()) {
+					n = zenbat.getInt(1);
+				} else if (n!=1) {
+					throw new DatuaOkerExc();
+				} 
+				ondoDago=true;
+			} catch (DatuaOkerExc e) {
+				e.inprimatu("gaixoaren NAN");
+				emaitza=this.sartuZenb(8, "pazientearen NAN");
+				saiakerak--;
+			} catch (SQLException s) {
+				s.printStackTrace();
+			}
+		} while (!ondoDago &&saiakerak>0);
+		if (!ondoDago) {
+			emaitza=-1;
+			System.out.println("NAN sartzeko aukerak bukatu zaizkizu");
+		}
+		return emaitza;
+  }
 
 	public void kontsultaInprimatu(ResultSet konts, String zutabeIzen) {
 		String[] z = zutabeIzen.split(",");
