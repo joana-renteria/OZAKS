@@ -57,13 +57,13 @@ public class Erabiltzailea {
 	
 	private void zitaEskatu() throws SQLException, KonexioarenParamFaltaException {
 		//Statement s = Konexioa.getKonexioa().createStatement();
-		String current = 
+		
 		String sql="SELECT DATA, ORDUA FROM MEDIKUA, ZITA WHERE MEDIKUNAN=NAN AND GAIXONAN IS NULL AND (DATA BETWEEN CURRENT_DATE AND ADDD_DATE(CURRENT_DATE+3))";
 		
 	}
 	
 	private void erakutsiZitak(int gNAN) throws KonexioarenParamFaltaException, SQLException {
-		if (this.gaixoaNanBadago(gNAN)) {
+		if (Reader.getReader().gaixoaNanBadago(gNAN)) {
 			String sql = "SELECT MEDIKU.IZENA, MEDIKUA.ABIZENA, GAIXOA.IZENA, GAIXOA.ABIZENA,DATA,"
 					+ "ORDUA,LEKUA,GELA FROM ZITA, MEDIKUA, GAIXOA WHERE MEDIKUANAN=NAN AND DATA>=CURRENT_DATE "
 					+ "AND LEKUA=ZENTROA AND GAIXOA.NAN=GAIXONAN AND GAIXONAN="+gNAN;
@@ -114,29 +114,5 @@ public class Erabiltzailea {
 		
 	}
 	
-	private boolean gaixoaNanBadago(int gNAN) {
-		int n=0, saiakerak=3;
-		boolean ondoDago=false;
-		do{
-			try{
-				String sql = "SELECT COUNT(GAIXOA.*) FROM GAIXOA WHERE NAN="+gNAN;
-				ResultSet zenbat=Konexioa.getKonexioa().kontsulta(sql);
-				if (zenbat.next()) {
-					n = zenbat.getInt(1);
-				} else if (n!=1) {
-					throw new DatuaOkerExc();
-				} 
-				ondoDago=true;
-			} catch (DatuaOkerExc e) {
-				e.inprimatu("gaixoaren NAN");
-				saiakerak--;
-			} catch (SQLException s) {
-				s.printStackTrace();
-			}
-		} while (!ondoDago &&saiakerak>0);
-		if (!ondoDago) {
-			System.out.println("NAN sartzeko aukerak bukatu zaizkizu");
-		}
-		return ondoDago;
-	}
+	
 }

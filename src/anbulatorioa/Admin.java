@@ -25,7 +25,7 @@ public class Admin {
 		return (pPass.equals(pasahitza));
 	}
 
-	/*public void gaixoaEzDago(int pNAN) throws SQLException, KonexioarenParamFaltaException {
+	public void gaixoaEzDago(int pNAN) throws SQLException, KonexioarenParamFaltaException {
 		boolean denaOndo=false;
 		Reader rd =Reader.getReader();
 		System.out.println("Sartutako NAN duen gaixorik ez dago");
@@ -38,9 +38,9 @@ public class Admin {
 					String pIzen=rd.sartuLetraLarriXehe("izena");
 					String pAbiz=rd.sartuLetraLarriXehe("abizena");
 					char pSex=rd.sartuSex();
-					String pData=rd.sartuJaioData();
+					Date pData=rd.irakurriData();
 					String pZentr=rd.sartuLetraLarriXehe("zentroa");
-					int pHosDago= rd.sartuBoolean() ;
+					int pHosDago= rd.sartuBoolean("Pazientea hospitalean dago");
 					String pNonBizi =rd.sartuLetraLarriXehe("bizi lekua");
 					int pAdina=rd.adinaKalkulatu();
 					int pTelf= rd.sartuZenb(9, "telefonoko");
@@ -56,7 +56,7 @@ public class Admin {
 					break;
 				}
 			}
-		}*/
+		}
 
 	private boolean medikuaNanBadago(int mNAN) {
 		int n=0, saiakerak=3;
@@ -248,13 +248,20 @@ public class Admin {
 	}
 	
 	private void datuakAdministratu(int aukera) {
+		
+		char pSex=rd.sartuSex();
+		String pData=rd.sartuJaioData();
+		String pZentr=rd.sartuLetraLarriXehe("zentroa");
+		int pHosDago= rd.sartuBoolean() ;
+		String pNonBizi =rd.sartuLetraLarriXehe("bizi lekua");
+		int pAdina=rd.adinaKalkulatu();
+		int pTelf= rd.sartuZenb(9, "telefonoko");
 		Reader rd = Reader.getReader();
 		if(aukera == 2) {
 			int pNAN = rd.sartuZenb(8, "pazientearen NAN");
-			int pZenb = rd.sartuZenb(12, ")
-					irakurriInt("Sekuritate Soziala: ");
-			String pIzen = rd.irakurri("Izena: ");
-			String pAbiz = rd.irakurri("Abizena: ");
+			int pZenb = rd.sartuZenb(12, "pazientearen Seguritate Sozialeko");
+			String pIzen=rd.sartuLetraLarriXehe("pazientearen izena");
+			String pAbiz=rd.sartuLetraLarriXehe("pazientearen abizena");
 			Char pSex = rd.irakurriChar("Generoa")rd.irakurri("Generoa: ");
 			String pData = rd.irakurri("Jaiotze data (UUUU-HH-EE): "); //TODO
 			String pZentr = rd.irakurri("Zentroa: ");
@@ -271,7 +278,8 @@ public class Admin {
 	
 	private void datuakAldatu() throws SQLException, KonexioarenParamFaltaException  {
 		Reader rd = Reader.getReader();
-		int gNAN = rd.irakurriInt("Pazientearen NANa: ");
+		int gNAN = rd.sartuZenb(8, "pazientearen NAN");
+		int gSSzenb=rd.sartuZenb(12, "pazientearen Seguritate Sozialeko zenbakia");
 		System.out.println ("\n-------GAIXOAREN ZEIN DATU----------");
 		String[] auk = {"Hospitalean badago","Ohiko zentroa","Telefono",
 				"Non bizi","Bueltatu lehengo menura"};
@@ -282,19 +290,19 @@ public class Admin {
 					toggleHospDago(gNAN);
 					break;
 				case 2:
-					zentroAldatu(gNAN, rd.irakurri("Zentro berriaren izena: "));
+					zentroAldatu(gNAN, rd.sartuLetraLarriXehe("zentro berriaren izena"));
 					break;
 				case 3:
-					tlfAldatu(gNAN, rd.irakurriInt("Telefono zenbaki berria: "));
+					tlfAldatu(gNAN, rd.sartuZenb(9, "telefono berriaren "));
 					break;
 				case 4:
-					udalerriAldatu(gNAN, rd.irakurri("Udalerriaren izena: "));
+					udalerriAldatu(gNAN, rd.sartuLetraLarriXehe("udalerriaren izena: "));
 					break;
 				case 5:
-					generoMarkaAldatu(gNAN, rd.irakurri("Genero marka berria [E/G/X]"));
+					generoMarkaAldatu(gNAN, rd.sartuSex());
 					break;
 				case 7:
-					iznAbizAldatu(gNAN, rd.irakurri("Izen berria: "), rd.irakurri("Abizen berria: "));
+					iznAbizAldatu(gNAN, rd.irakurri("izen berria: "), rd.irakurri("abizen berria: "));
 					break;
 				default:
 					System.out.println("Saiatu berriro.");
@@ -310,7 +318,7 @@ public class Admin {
 		return Konexioa.getKonexioa().aldaketa(sql);
 	}
 
-	private boolean generoMarkaAldatu(int pNAN, String generoMarka) {
+	private boolean generoMarkaAldatu(int pNAN, Char generoMarka) {
 		String sql = "UPDATE GAIXOA SET SEXUA = "+generoMarka+" WHERE NAN = "+pNAN;
 		return Konexioa.getKonexioa().aldaketa(sql);
 	}
@@ -345,7 +353,7 @@ public class Admin {
 	}
 
 	private boolean gaixoaGehitu(int pNAN, int pZenb, String pIzen,
-			String pAbiz, char pSex, String pData, String pZentr,
+			String pAbiz, char pSex, Date pData, String pZentr,
 			int pHospDago, String pNonBizi,int pAdina, int pTelf) throws SQLException, KonexioarenParamFaltaException {
 		String sql = "INSERT INTO GAIXOA VALUES ("+pNAN+","+pZenb+",'"+pIzen+"','"+pAbiz+"','"+pSex+"','"+pData.toString()+"','"+pZentr+"','"+pHospDago+"','"+pNonBizi+"','"+pAdina+"','"+pTelf+"')";
 		return Konexioa.getKonexioa().aldaketa(sql);
