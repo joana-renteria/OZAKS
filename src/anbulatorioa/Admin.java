@@ -25,6 +25,70 @@ public class Admin {
 		return (pPass.equals(pasahitza));
 	}
 
+	public void gaixoaEzDago(int pNAN) throws SQLException, KonexioarenParamFaltaException {
+		boolean denaOndo=false;
+		Reader rd =Reader.getReader();
+		System.out.println("Sartutako NAN duen gaixorik ez dago");
+		System.out.println("NAN hori duen gaixo berriaren datuak sartu nahi duzu?");
+		char karak=rd.irakurriChar("Bai (B) edo ez (E) sakatu");
+		while (!denaOndo) {
+			switch (karak) {
+				case 'B':
+					int pZenb=rd.sartuZenb(12, "seguritate sozialeko");
+					String pIzen=rd.sartuLetraLarriXehe("izena");
+					String pAbiz=rd.sartuLetraLarriXehe("abizena");
+					char pSex=rd.sartuSex();
+					String pData=rd.sartuJaioData();
+					String pZentr=rd.sartuLetraLarriXehe("zentroa");
+					int pHosDago= rd.sartuBoolean() ;
+					String pNonBizi =rd.sartuLetraLarriXehe("bizi lekua");
+					int pAdina=rd.adinaKalkulatu();
+					int pTelf= rd.sartuZenb(9, "telefonoko");
+					this.gaixoaGehitu(pNAN, pZenb, pIzen, pAbiz, pSex, pData, pZentr, pHosDago, pNonBizi, pAdina, pTelf);
+					denaOndo=true;
+					break;
+				case 'E':
+					this.sartuNan();
+					denaOndo=true;
+					break;
+				default:
+					System.out.println("Ez duzu ez B, ezta E idatzi");
+					break;
+			}
+		}
+  }
+	
+	public void sartuNan() {
+		int n=0;
+		boolean ondoDago=false;
+		Reader rd= Reader.getReader();
+		int gaixNAN=rd.irakurriInt("Gaixoaren NAN sartu");
+		String x= Integer.toString(gaixNAN);
+		do{
+			try{
+				if (x.length()!=8) {
+					throw new TamainaExc();
+				}
+				String sql = "SELECT COUNT(Gaixoa.*) FROM Gaixoa WHERE NAN="+gaixNAN;
+					//PreparedStatement st= Konexioa.getKonexioa().preparedStatement(sql);
+				ResultSet zenbat=Konexioa.getKonexioa().kontsulta(sql);
+				if (zenbat.next()) {
+					n = zenbat.getInt(1);
+				} else if (n!=1) {
+					this.gaixoaEzDago(gaixNAN);
+				} else {
+					
+				}
+				ondoDago=true;
+			} catch (TamainaExc e) {
+				e.inprimatu("NAN", 8);
+			} catch (SQLException s) {
+				s.printStackTrace();
+			} catch (KonexioarenParamFaltaException k) {
+				k.printStackTrace();
+			}
+		} while (!ondoDago);
+	}
 	
 	public void administratu() throws SQLException, KonexioarenParamFaltaException {
 		Reader rd = Reader.getReader();
@@ -61,7 +125,6 @@ public class Admin {
 			}
 		} 
 		System.out.println("Saioa itxi da.");
-		
 	}
 	
 	public void zitak() throws SQLException, KonexioarenParamFaltaException {
@@ -128,8 +191,14 @@ public class Admin {
 		}
 	}
 	
+	private void erakutsiOnartuGabekoak(int mNAN) {
+		String sql = "SELECT GAIXON,DATA,ORDUA,LEKUA,GELA WHERE ONARTUA=0";
+		ResultSet konts = Konexioa.getKonexioa().kontsulta(sql);
+		Reader.getReader().kontsultaInprimatu(konts, "GAIXONAN,DATA,ORDUA,LEKUA,GELA");
+	}
+	
 	public boolean zitaEman(int mNAN) {
-		//TODO zita nuluak sortzeko aukera eman aka txandak
+		//datuak nuluak izan daitezke
 		Reader rd = Reader.getReader();
 		boolean emaitza=false;
 		int gNAN = rd.gaixoaNan();
@@ -183,6 +252,9 @@ public class Admin {
 	}
 	
 	private boolean txandaGeneratu(int mNAN, int egunak) {
+		// Hainbat egunetako txandak sortzen ditu
+		//8:00etatik 14:00era
+		//TODO ordutegi ezberdinak gehitu
 		boolean em = true;
 		String sql;
 		int i = 0;
@@ -209,7 +281,7 @@ public class Admin {
 			}
 		} else {
 			gaixoaKendu(gNAN);
-		} 
+		}
 	}
 	
 	private void datuakAldatu() throws SQLException, KonexioarenParamFaltaException  {
@@ -291,7 +363,7 @@ public class Admin {
 		return Konexioa.getKonexioa().aldaketa(sql);
 	}
 
-	private boolean gaixoaGehitu(int pNAN) throws SQLException, KonexioarenParamFaltaException {
+  private boolean gaixoaGehitu(int pNAN) throws SQLException, KonexioarenParamFaltaException {
 		Reader rd= Reader.getReader();
 		int pZenb=rd.sartuZenb(12, "seguritate sozialeko");
 		String pIzen=rd.sartuLetraLarriXehe("izena");
@@ -338,9 +410,16 @@ public class Admin {
 		return true;
 	}
 	
-	private boolean botikaDago(String pBotika) {
-		//TODO botika dagoen konprobatu
-		return true;
+	private boolean botikaDago(int pKodea) {
+		String sql = "SELECT KODEA FROM BOTIKA WHERE KODEA="+pKodea;
+		ResultSet em = Konexioa.getKonexioa().kontsulta(sql);
+		try {
+			em.next();
+			if(em.getInt("KODEA") == (pKodea)) return true;
+		} catch (SQLException s) {
+			s.printStackTrace();
+		}
+		return false;
 	}
 	
 	private boolean botikaEman(int pKodea, int pSSzenb, int pNan, String pMarka,

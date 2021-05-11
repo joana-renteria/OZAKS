@@ -268,5 +268,29 @@ public class Reader {
 			System.out.println("NAN sartzeko aukerak bukatu zaizkizu");
 		}
 		return emaitza;
+  }
+
+	public void kontsultaInprimatu(ResultSet konts, String zutabeIzen) {
+		String[] z = zutabeIzen.split(",");
+		int i;
+		try {
+			System.out.println();
+			i = 0;
+			while(i <= z.length) {
+				System.out.print(z[i]+"\t");
+				i++;
+			}
+			System.out.println("-------------------------------------------------------------------------------");
+			while(konts.next()) {
+				i = 0;
+				while(i <= z.length) {
+					System.out.print(konts.getString(i)+"\t");
+					i++;
+				}
+			}
+		} catch (SQLException e) {
+			System.out.println("Emaitzak jasotzen errorea");
+			e.printStackTrace();
+		}
 	}
 }
