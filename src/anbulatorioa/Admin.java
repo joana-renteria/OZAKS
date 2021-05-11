@@ -355,7 +355,7 @@ public class Admin {
 
   private boolean gaixoaGehitu(int pNAN) throws SQLException, KonexioarenParamFaltaException {
 		Reader rd= Reader.getReader();
-		int pZenb=rd.sartuZenb(12, "seguritate sozialeko");
+		int pZenb=rd.sartuZenb(10, "seguritate sozialeko");
 		String pIzen=rd.sartuLetraLarriXehe("izena");
 		String pAbiz=rd.sartuLetraLarriXehe("abizena");
 		char pSex=rd.sartuSex();
