@@ -48,6 +48,12 @@ public class Reader {
 		return ema2;
 	}
 	
+	public float irakurriFloat(String pMezua) {
+		String ema = this.irakurri(pMezua);
+		float ema2 = Float.parseFloat(ema);
+		return ema2;
+	}
+	
 	public int irakurriIntTarte (String pMezua, int min, int max) {
 		boolean denaOndo=false;
 		int pZenb=0;
@@ -98,14 +104,14 @@ public class Reader {
 		int pZenb=-1;
 		do{
 			try {
-				pZenb=this.irakurriInt("Sartu gaixoaren"+pMota+" zenbakia:");
+				pZenb=this.irakurriInt("Sartu "+pMota+" zenbakia:");
 				String x=Integer.toString(pZenb);
 				if (x.length()!=pTamaina) {
 					throw new TamainaExc();
 			}
 			denaOndo=true;
 			}catch(TamainaExc e) {
-				e.inprimatu(pMota,12);
+				e.inprimatu(pMota,pTamaina);
 			}
 		}while (!denaOndo);
 		denaOndo=false;

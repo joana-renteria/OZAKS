@@ -2,7 +2,6 @@ package anbulatorioa;
 
 import java.sql.SQLException;
 import java.sql.Date;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Time;
@@ -26,7 +25,7 @@ public class Admin {
 		return (pPass.equals(pasahitza));
 	}
 
-	public void gaixoaEzDago(int pNAN) throws SQLException, KonexioarenParamFaltaException {
+	/*public void gaixoaEzDago(int pNAN) throws SQLException, KonexioarenParamFaltaException {
 		boolean denaOndo=false;
 		Reader rd =Reader.getReader();
 		System.out.println("Sartutako NAN duen gaixorik ez dago");
@@ -57,39 +56,34 @@ public class Admin {
 					break;
 				}
 			}
-		}
-	
-	public void sartuNan() {
-		int n=0;
+		}*/
+
+	private boolean medikuaNanBadago(int mNAN) {
+		int n=0, saiakerak=3;
 		boolean ondoDago=false;
-		Reader rd= Reader.getReader();
-		int gaixNAN=rd.irakurriInt("Gaixoaren NAN sartu");
-		String x= Integer.toString(gaixNAN);
 		do{
 			try{
-				if (x.length()!=8) {
-					throw new TamainaExc();
-				}
-				String sql = "SELECT COUNT(Gaixoa.*) FROM Gaixoa WHERE NAN="+gaixNAN;
-					//PreparedStatement st= Konexioa.getKonexioa().preparedStatement(sql);
+				String sql = "SELECT COUNT(MEDIKUA.*) FROM MEDIKUA WHERE NAN="+mNAN;
 				ResultSet zenbat=Konexioa.getKonexioa().kontsulta(sql);
 				if (zenbat.next()) {
 					n = zenbat.getInt(1);
 				} else if (n!=1) {
-					this.gaixoaEzDago(gaixNAN);
-				} else {
-					
-				}
+					throw new DatuaOkerExc();
+				} 
 				ondoDago=true;
-			} catch (TamainaExc e) {
-				e.inprimatu("NAN", 8);
+			} catch (DatuaOkerExc e) {
+				e.inprimatu("NAN");
+				saiakerak--;
 			} catch (SQLException s) {
 				s.printStackTrace();
-			} catch (KonexioarenParamFaltaException k) {
-				k.printStackTrace();
 			}
-		} while (!ondoDago);
+		} while (!ondoDago &&saiakerak>0);
+		if (!ondoDago) {
+			System.out.println("NAN sartzeko aukerak bukatu zaizkizu");
+		}
+		return ondoDago;
 	}
+	
 	
 	public void administratu() throws SQLException, KonexioarenParamFaltaException {
 		Reader rd = Reader.getReader();
@@ -99,14 +93,14 @@ public class Admin {
 		while (zenb != 4) {
 			switch (zenb) {
 				case 1: 
-					zitak(rd.irakurriInt("Medikuaren NAN: "));
+					zitak();
 					break;
 				case 2:
-					botikaEman(rd.irakurriInt("Botikaren kodea"),
-							rd.irakurriInt("Pazientearen NANa:"),
+					botikaEman(rd.sartuZenb(3, "Botikaren kodea"),
+							rd.sartuZenb(8,"Pazientearen NANa:"),
 							rd.irakurri("Botikaren marka:"),
 							rd.irakurri("Botikaren izena:"),
-							rd.irakurriInt("Dosi kopurua:"));
+							rd.irakurriFloat("Botikaren dosi kopurua:"));
 					break;
 				case 3:
 					String[] auk2 = {"Paziente baten datuak aldatu","Pazientea gehitu",
@@ -127,25 +121,31 @@ public class Admin {
 		
 	}
 	
-	public void zitak(int mNAN) {
+	public void zitak() throws SQLException, KonexioarenParamFaltaException {
 		Reader rd = Reader.getReader();
-		String[] auk = {"Zitak erakutsi","Zita eman",
+		int mNAN=rd.sartuZenb(8, "medikuaren NAN");
+		boolean badago=this.medikuaNanBadago(mNAN);
+		if (badago) {
+			String[] auk = {"Zitak erakutsi","Zita eman",
 				"Zita bat ezabatu","Atzera"};
-		int zenb = rd.aukerak(auk);
-		while (zenb != 4) {
-			switch (zenb) {
-				case 1:
-					zitakErakutsi(mNAN);
-					break;
-				case 2:
-					zitaEman(mNAN);
-					break;
-				case 3:
-					zitaEzabatu(mNAN);
-					break;
-				default:
-					System.out.println("Saiatu berriro");
+			int zenb = rd.aukerak(auk);
+			while (zenb != 4) {
+				switch (zenb) {
+					case 1:
+						zitakErakutsi(mNAN);
+						break;
+					case 2:
+						zitaEman(mNAN);
+						break;
+					case 3:
+						zitaEzabatu(mNAN);
+						break;
+					default:
+						System.out.println("Saiatu berriro");
+				}
 			}
+		} else {
+			this.administratu();
 		}
 	}
 	
@@ -188,12 +188,12 @@ public class Admin {
 	public boolean zitaEman(int mNAN) {
 		//TODO zita nuluak sortzeko aukera eman aka txandak
 		Reader rd = Reader.getReader();
-		int gNAN = rd.sartuZenb(8, "NAN-eko");
-		Date zData = rd.irakurriData("Data: ");
-		Time zOrdua = rd.irakurriOrdua("Ordua: ");
-		String zLekua = rd.sartuLetraLarriXehe("lekua:");
-		String zGela = rd.irakurri("String gela: ");
-		String sql = "UPDATE ZITA SET('"+mNAN+"',"+"'NULL'"+",'"+gNAN+"','NULL','"+zData+"','"+zOrdua+"','"+zLekua+"','"+zGela+"')"
+		int gNAN = rd.sartuZenb(8, " gaixoaren NAN");
+		Date zData = rd.irakurriData("Sartu aukeratutako data: ");
+		Time zOrdua = rd.irakurriOrdua("Sartu aukeratutako ordua: ");
+		String zLekua = rd.sartuLetraLarriXehe("ohiko zentroaren izena");
+		String zGela = rd.irakurri("Sartu gela (String): ");
+		String sql = "UPDATE ZITA SET('NULL','NULL'"+",'"+gNAN+"','NULL','"+zData+"','"+zOrdua+"','"+zLekua+"','"+zGela+"')"
 				+ "WHERE MEDIKUNAN="+mNAN+"AND DATA='"+zData+"' AND ORDUA='"+zOrdua+"'";
 		return Konexioa.getKonexioa().aldaketa(sql);
 	}
@@ -203,7 +203,7 @@ public class Admin {
 		int gNAN = rd.irakurriInt("Gaixoaren NANa: ");
 		Date zData = rd.irakurriData("Data: ");
 		Time zOrdua = rd.irakurriOrdua("Ordua: ");
-		String sql = "DELTE FROM ZITA WHERE GAIXONAN = "+gNAN+" AND DATA = "+zData.toString()+" AND zOrdua = "+zOrdua.toString();
+		String sql = "DELETE FROM ZITA WHERE GAIXONAN = "+gNAN+" AND DATA = "+zData.toString()+" AND zOrdua = "+zOrdua.toString();
 		return Konexioa.getKonexioa().aldaketa(sql);
 	}
 	
@@ -226,8 +226,7 @@ public class Admin {
 	private void datuakAdministratu(int aukera) {
 		Reader rd = Reader.getReader();
 		if(aukera == 2) {
-			int pNAN = rd.
-			//rd.irakurriInt("Gaixoaren NAN: ");
+			int pNAN = rd.sartuZenb(8, "gaixoaren NAN");
 			int pZenb = rd.irakurriInt("Sekuritate Soziala: ");
 			String pIzen = rd.irakurri("Izena: ");
 			String pAbiz = rd.irakurri("Abizena: ");
@@ -323,19 +322,19 @@ public class Admin {
 	private boolean gaixoaGehitu(int pNAN, int pZenb, String pIzen,
 			String pAbiz, char pSex, String pData, String pZentr,
 			int pHospDago, String pNonBizi,int pAdina, int pTelf) throws SQLException, KonexioarenParamFaltaException {
-		String sql = "INSERT INTO gaixoa VALUES ("+pNAN+","+pZenb+",'"+pIzen+"','"+pAbiz+"','"+pSex+"','"+pData.toString()+"','"+pZentr+"','"+pHospDago+"','"+pNonBizi+"','"+pAdina+"','"+pTelf+"')";
+		String sql = "INSERT INTO GAIXOA VALUES ("+pNAN+","+pZenb+",'"+pIzen+"','"+pAbiz+"','"+pSex+"','"+pData.toString()+"','"+pZentr+"','"+pHospDago+"','"+pNonBizi+"','"+pAdina+"','"+pTelf+"')";
 		return Konexioa.getKonexioa().aldaketa(sql);
 	}
 	
 	private boolean gaixoaKendu(int pNAN) {
-		String sql = "DELETE FROM gaixoa WHERE NAN="+pNAN;
+		String sql = "DELETE FROM GAIXOA WHERE NAN="+pNAN;
 		return Konexioa.getKonexioa().aldaketa(sql);
 	}
 	
 	private boolean medikuaGehitu(int pNAN, int pZenb, String pIzen,
 			String pAbiz, String pZentr, Date pData, int pFamili,
 			String pEspezial, int pTelf) {
-		String sql = "INSERT INTO medikua("+pNAN+","+pZenb+",'"+pIzen+"','"+pAbiz+"','"+pZentr+"','"+pData.toString()+"','"+pFamili+"','"+pEspezial+"','"+pTelf+"')";
+		String sql = "INSERT INTO MEDIKUA VALUES("+pNAN+","+pZenb+",'"+pIzen+"','"+pAbiz+"','"+pZentr+"','"+pData.toString()+"','"+pFamili+"','"+pEspezial+"','"+pTelf+"')";
 		return Konexioa.getKonexioa().aldaketa(sql);
 	}
 	
@@ -343,13 +342,15 @@ public class Admin {
 			String pIzena, String marka, float dosiKop, Date iraungiData) {
 		//TODO botika gehitu, true gauxatu baden
 		//false botika jada existitzen baden
-		String sql = "INSERT INTO botika("+gaixoNAN+","+sszenb+","+kodea+","+pIzena+",'"+marka+"',"+dosiKop+","+iraungiData.toString()+"";
+		String sql = "INSERT INTO BOTIKA VALUES("+gaixoNAN+","+sszenb+","+kodea+","+pIzena+",'"+marka+"',"+dosiKop+","+iraungiData.toString()+"";
 		return Konexioa.getKonexioa().aldaketa(sql);
 	}
 	
 	private boolean botikaEzabatu(String pBotika) {
 		//TODO botika sistematik ezabatu
 		//ezabatzerakoan true bestela false
+		boolean jadaEzab=false;
+		if (botikaDago (pBotika))
 		return true;
 	}
 	
@@ -358,14 +359,14 @@ public class Admin {
 		return true;
 	}
 	
-	private boolean botikaEman(int pKodea, int pNan, String pMarka,
-			String pBIzena, int pDosiKop) {
-		String sql = "INSERT INTO botika(NULL,NULL,'"+pKodea+"','"+pBIzena+"','"+pMarka+"','"+pDosiKop+"')";
+	private boolean botikaEman(int pKodea, int pSSzenb, int pNan, String pMarka,
+			String pBIzena, float pDosiKop) {
+		String sql = "INSERT INTO BOTIKA VALUES ("+pNan+","+pSSzenb+",'"+pKodea+"','"+pBIzena+"','"+pMarka+"','"+pDosiKop+"')";
 		return Konexioa.getKonexioa().aldaketa(sql);
 	}
 	
-	private boolean botikaKendu(int pKodea, int pNan, String pBIzena) {
-		String sql = "DELETE FROM botika WHERE KODEA="+pKodea+",GAIXONAN="+pNan+",IZENA="+pBIzena;
+	private boolean botikaKendu(int pKodea) {
+		String sql = "DELETE FROM BOTIKA WHERE KODEA="+pKodea;
 		return Konexioa.getKonexioa().aldaketa(sql);
 	}
 	
