@@ -25,22 +25,17 @@ public class Erabiltzailea {
 	
 	public void erabili() throws SQLException, KonexioarenParamFaltaException {
 		Reader rd= Reader.getReader();
-		System.out.println ("-----------------");
-		System.out.println ("0- Zita eskatu");
-		System.out.println ("1- Dauzkazun zitak erakutsi");
-		System.out.println ("2- Botiken informazioa eman");
-		System.out.println ("3- Eskatu zure daturen bat aldatzeko");
-		System.out.println ("4- Irten");
-		System.out.println ("-----------------");
-		int zenb=rd.irakurriInt("Sartu zenbaki bat");
+		String[] auk = {"Zita eskatu", "Dauzkazun zitak erakutsi",
+				"Botiken informazioa eman", "Eskatu zure daturen bat aldatzeko","Irten"};
+		int zenb = rd.aukerak(auk);
 		while (zenb!=4) {
 			switch (zenb) {
 				case 0: 
 					zitaEskatu();
 					break;
 				case 1:
-					int gNAN=rd.sartuZenb(8, "zure NAN (pazientea)");
-					erakutsiZitak (gNAN);
+					int gNAN = rd.sartuZenb(8, "zure NAN (pazientea)");
+					erakutsiZitak (nan);
 					break;
 				case 2:
 					botikaInprimatu();
@@ -96,7 +91,7 @@ public class Erabiltzailea {
 		String[] auk = {"Jarraitu","Irten"};
 		int zenb = rd.aukerak(auk);
 		if (zenb == 1) {
-			Date zData = rd.irakurriData("Data: ");
+			Date zData = rd.irakurriData("Urtea: ", "Hilabetea: ", "Eguna: ", rd.itzuliUnekoUrtea(), rd.itzuliUnekoUrtea()+1);
 			Time zOrdua = rd.irakurriOrdua("Ordua: ");
 			int mNAN = rd.irakurriInt("Medikua (NAN): ");
 			String sql = "UPDATE ZITA SET GAIXONAN="+nan+", ONARTUA=0 WHERE DATA="+zData
@@ -119,7 +114,7 @@ public class Erabiltzailea {
 			String[] auk = {"Ohiko zentroa","Telefono",
 					"Non bizi","Bueltatu lehengo menura"};
 			int zenb = rd.aukerak(auk);
-			while (zenb != 7) {
+			while (zenb != 4) {
 				switch (zenb) {
 					case 1:
 						zentroAldatu(gNAN, rd.sartuLetraLarriXehe("zentro berriaren izena"));
@@ -129,9 +124,6 @@ public class Erabiltzailea {
 						break;
 					case 3:
 						udalerriAldatu(gNAN,rd.sartuLetraLarriXehe("udalerriaren izena: "));
-						break;
-					case 4:
-						erabili();
 						break;
 					default:
 						System.out.println("Saiatu berriro.");

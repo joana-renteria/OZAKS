@@ -34,17 +34,7 @@ public class Admin {
 		while (!denaOndo) {
 			switch (karak) {
 				case 'B':
-					int pZenb=rd.sartuZenb(12, "seguritate sozialeko");
-					String pIzen=rd.sartuLetraLarriXehe("izena");
-					String pAbiz=rd.sartuLetraLarriXehe("abizena");
-					char pSex=rd.sartuSex();
-					String pData=rd.sartuJaioData();
-					String pZentr=rd.sartuLetraLarriXehe("zentroa");
-					int pHosDago= rd.sartuBoolean() ;
-					String pNonBizi =rd.sartuLetraLarriXehe("bizi lekua");
-					int pAdina=rd.adinaKalkulatu();
-					int pTelf= rd.sartuZenb(9, "telefonoko");
-					this.gaixoaGehitu(pNAN, pZenb, pIzen, pAbiz, pSex, pData, pZentr, pHosDago, pNonBizi, pAdina, pTelf);
+					this.gaixoaGehitu(pNAN);
 					denaOndo=true;
 					break;
 				case 'E':
@@ -402,12 +392,15 @@ public class Admin {
 		return Konexioa.getKonexioa().aldaketa(sql);
 	}
 	
-	private boolean botikaEzabatu(String pBotika) {
+	private boolean botikaEzabatu(int pBotika) {
 		//TODO botika sistematik ezabatu
 		//ezabatzerakoan true bestela false
 		boolean jadaEzab=false;
-		if (botikaDago (pBotika))
-		return true;
+		if (botikaDago (pBotika)) {
+			String sql = "DELTE FROM BOTIKA WHERE KODEA="+pBotika;
+			return Konexioa.getKonexioa().aldaketa(sql);
+		}
+		return false;
 	}
 	
 	private boolean botikaDago(int pKodea) {
@@ -434,28 +427,6 @@ public class Admin {
 		return Konexioa.getKonexioa().aldaketa(sql);
 	}
 	
-	private void gaixoaEzDago(int pNAN) throws SQLException, KonexioarenParamFaltaException {
-		boolean denaOndo=false;
-		Reader rd =Reader.getReader();
-		System.out.println("Sartutako NAN duen gaixorik ez dago");
-		System.out.println("NAN hori duen gaixo berriaren datuak sartu nahi duzu?");
-		char karak=rd.irakurriChar("Bai (B) edo ez (E) sakatu");
-		while (!denaOndo) {
-			switch (karak) {
-				case 'B':
-					this.gaixoaGehitu(pNAN);
-					denaOndo=true;
-					break;
-				case 'E':
-					denaOndo=true;
-					break;
-				default:
-					System.out.println("Ez duzu ez B, ezta E idatzi");
-					break;
-				}
-			}
-		}
-
 	private boolean medikuaNanBadago(int mNAN) {
 		int n=0, saiakerak=3;
 		boolean ondoDago=false;

@@ -17,9 +17,9 @@ public class Main {
 	private static String izena;
 	private static int nan;
 	private static Konexioa kx;
-	private static String helb = "localhost/anbulatorioa";
-	private static String erab = "admin";
-	private static String pasa = "db";
+	private static String helb = "remotemysql.com:3306/anbulatorioa";
+	private static String erab = "bvcA2AmJT6";
+	private static String pasa = "a645cRXIen";
 
 	
 	public static int login() {
