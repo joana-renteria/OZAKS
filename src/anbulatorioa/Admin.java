@@ -113,6 +113,7 @@ public class Admin {
 					System.out.println("Saiatu berriro.");
 					break;
 			}
+			zenb = rd.aukerak(auk);
 		} 
 		System.out.println("Saioa itxi da.");
 	}
@@ -139,6 +140,7 @@ public class Admin {
 					default:
 						System.out.println("Saiatu berriro");
 				}
+				zenb = rd.aukerak(auk);
 			}
 		} else {
 			this.administratu();//TODO: GEHITU medikua
@@ -302,6 +304,7 @@ public class Admin {
 						System.out.println("Saiatu berriro.");
 						break;
 				}
+				zenb = rd.aukerak(auk);
 			} 	if (zenb == 7) {	
 				administratu();
 			}

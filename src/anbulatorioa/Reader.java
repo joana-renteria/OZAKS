@@ -271,6 +271,7 @@ public class Reader {
 	}
 
 	public void kontsultaInprimatu(ResultSet konts, String zutabeIzen) {
+		boolean hutsa = true;
 		String[] z = zutabeIzen.split(",");
 		int i;
 		System.out.println();
@@ -278,9 +279,10 @@ public class Reader {
 		System.out.println("-------------------------------------------------------------------------------");
 		try {
 			while(konts.next()) {
+				hutsa = false;
 				i = 0;
 				while(i <= z.length-1) {
-					System.out.print(konts.getString(z[i])+"\t");
+					System.out.print(z[i]+":"+konts.getString(z[i])+" ");
 					i++;
 				}
 				System.out.println();
@@ -289,6 +291,7 @@ public class Reader {
 			System.out.println("Emaitzak jasotzen errorea");
 			e.printStackTrace();
 		}
+		if(hutsa) System.out.println("Daturik ez");
 		System.out.println("-------------------------------------------------------------------------------");
 	}
 }

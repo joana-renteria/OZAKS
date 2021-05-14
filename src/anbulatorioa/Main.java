@@ -49,8 +49,8 @@ public class Main {
 		} else {
 			try {
 				int nan = rd.irakurriInt("Sartu NANa: ");
-				ResultSet bIzen = Konexioa.getKonexioa().kontsulta("SELECT IZENA FROM GAIXOA WHERE NAN="+nan);
-				if(bIzen.next() && bIzen.getString(0).equals(izena)) {
+				ResultSet bIzen = Konexioa.getKonexioa().kontsulta("SELECT IZENA FROM gaixoa WHERE NAN="+nan);
+				if(bIzen.next() && bIzen.getString("IZENA").equals(izena)) {
 					kodea = 0;
 				}
 				//TODO SSZENB konprobatu
