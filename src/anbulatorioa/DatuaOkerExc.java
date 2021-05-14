@@ -5,6 +5,6 @@ public class DatuaOkerExc extends Exception{
 		super();
 	}
 	public void inprimatu (String pMota) {
-		System.out.println("Sartu duzun "+pMota+ "ez da zuzena");
+		System.out.println("Sartu duzun "+pMota+" ez da zuzena");
 	}
 }

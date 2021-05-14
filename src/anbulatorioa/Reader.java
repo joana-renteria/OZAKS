@@ -14,46 +14,46 @@ import java.util.Iterator;
 import java.util.Scanner;
 
 public class Reader {
-	
+
 	private static Reader nireReader = null;
 	private Scanner sc;
 
 	private Reader() {
 		sc = new Scanner(System.in);
 	}
-	
+
 	public static Reader getReader() {
 		if(Reader.nireReader == null) {
 			Reader.nireReader = new Reader();
 		}
 		return nireReader;
 	}
-	
+
 	public String irakurri(String pMezua) {
 		System.out.println(pMezua);
 		String emaitza = sc.next();
 		return emaitza;
 	}
-	
+
 	public char irakurriChar(String pMezua) {
 		System.out.println(pMezua);
 		char karakterea=sc.next().charAt(0);
 		return karakterea;
 	}
-	
+
 	public int irakurriInt(String pMezua) {
 		//TODO try and catch y eso
 		String ema = this.irakurri(pMezua);
 		int ema2 = Integer.parseInt(ema);
 		return ema2;
 	}
-	
+
 	public float irakurriFloat(String pMezua) {
 		String ema = this.irakurri(pMezua);
 		float ema2 = Float.parseFloat(ema);
 		return ema2;
 	}
-	
+
 	public int irakurriIntTarte (String pMezua, int min, int max) {
 		boolean denaOndo=false;
 		int pZenb=0;
@@ -70,7 +70,7 @@ public class Reader {
 		}while (!denaOndo);
 		return pZenb;
 	}
-	
+
 	public String sartuLetraLarriXehe(String pMota) {
 		boolean denaOndo=false;
 		int saiakerak=2;
@@ -98,7 +98,7 @@ public class Reader {
 		}
 		return pIzen;
 	}
-	
+
 	public int sartuZenb(int pTamaina, String pMota) {
 		boolean denaOndo=false;
 		int pZenb=-1;
@@ -108,8 +108,8 @@ public class Reader {
 				String x=Integer.toString(pZenb);
 				if (x.length()!=pTamaina) {
 					throw new TamainaExc();
-			}
-			denaOndo=true;
+				}
+				denaOndo=true;
 			}catch(TamainaExc e) {
 				e.inprimatu(pMota,pTamaina);
 			}
@@ -117,7 +117,7 @@ public class Reader {
 		denaOndo=false;
 		return pZenb;
 	}
-	
+
 	public char sartuSex() {
 		boolean denaOndo=false;
 		char pSex='A';
@@ -134,17 +134,17 @@ public class Reader {
 		}
 		return pSex;
 	}
-	
+
 	//KONPROBATU DATE MODUAN EDO STRING MODUAN BALIO DUEN
-	
+
 	private String sartuData(String pMezua1, String pMezua2, String pMezua3,int min, int max) {
 		int urtea=this.irakurriIntTarte(pMezua1,min, max);
 		int hilab=this.itzuliHilabetea(pMezua2);
 		int eguna=this.itzuliEguna(hilab, urtea, pMezua3);
 		return urtea+"-"+hilab+"-"+eguna;
 	}
-	
-	
+
+
 	public int adinaKalkulatu(Date data) {
 		String jaioData=data.toString();
 		int urtea= Integer.parseInt(jaioData.substring(0, 4));
@@ -156,7 +156,7 @@ public class Reader {
 		Period periodo=Period.between (jaiotzeData, unekoa);
 		return periodo.getYears();
 	}
-	
+
 	public int itzuliUnekoUrtea() {
 		Date data = new Date(0);
 		Calendar egutegia=Calendar.getInstance();
@@ -164,12 +164,12 @@ public class Reader {
 		int unekoData= egutegia.get(Calendar.YEAR);
 		return unekoData;
 	}
-	
-	
+
+
 	private int itzuliHilabetea(String pMezua) {
 		return this.irakurriIntTarte(pMezua, 01, 12);
 	}
-	
+
 	private int itzuliEguna(int hilab, int urtea, String pMezua) {
 		boolean denaOndo=false;
 		int[] egunaHil= {31,28,31,30,31,30,31,31,30,31,30,31};
@@ -195,7 +195,7 @@ public class Reader {
 		}
 		return eguna;
 	}
-	
+
 	public int sartuBoolean (String pMezua) {
 		String pEmaitza =this.irakurri(pMezua+" true edo false sartu");
 		int i=0;
@@ -221,14 +221,14 @@ public class Reader {
 		Date ema = Date.valueOf(irak);
 		return ema;
 	}
-	
-	
+
+
 	public Time irakurriOrdua(String pMezua) {
 		String irak = this.irakurri(pMezua);
 		Time ema = Time.valueOf(irak);
 		return ema;
 	}
-	
+
 	public int aukerak(String[] lista) {
 		System.out.println ("-----------------");
 		Iterator<String> itr = Arrays.asList(lista).iterator();
@@ -241,13 +241,13 @@ public class Reader {
 		return irakurriInt("Sartu zenbaki bat: ");
 
 	}
-	
+
 	public int gaixoaNan() {
 		int n=0, saiakerak=3, emaitza=this.sartuZenb(8, "pazientearen NAN ");
 		boolean ondoDago=false;
 		do{
 			try{
-				String sql = "SELECT COUNT(GAIXOA.*) FROM GAIXOA WHERE NAN="+emaitza;
+				String sql = "SELECT COUNT(gaixoa.*) FROM gaixoa WHERE NAN="+emaitza+";";
 				ResultSet zenbat=Konexioa.getKonexioa().kontsulta(sql);
 				if (zenbat.next()) {
 					n = zenbat.getInt(1);
@@ -268,29 +268,27 @@ public class Reader {
 			System.out.println("NAN sartzeko aukerak bukatu zaizkizu");
 		}
 		return emaitza;
-  }
+	}
 
 	public void kontsultaInprimatu(ResultSet konts, String zutabeIzen) {
 		String[] z = zutabeIzen.split(",");
 		int i;
+		System.out.println();
+		System.out.println("Emaitzak:");
+		System.out.println("-------------------------------------------------------------------------------");
 		try {
-			System.out.println();
-			i = 0;
-			while(i <= z.length) {
-				System.out.print(z[i]+"\t");
-				i++;
-			}
-			System.out.println("-------------------------------------------------------------------------------");
 			while(konts.next()) {
 				i = 0;
-				while(i <= z.length) {
-					System.out.print(konts.getString(i)+"\t");
+				while(i <= z.length-1) {
+					System.out.print(konts.getString(z[i])+"\t");
 					i++;
 				}
+				System.out.println();
 			}
 		} catch (SQLException e) {
 			System.out.println("Emaitzak jasotzen errorea");
 			e.printStackTrace();
 		}
+		System.out.println("-------------------------------------------------------------------------------");
 	}
 }

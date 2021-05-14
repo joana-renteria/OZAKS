@@ -17,10 +17,9 @@ public class Main {
 	private static String izena;
 	private static int nan;
 	private static Konexioa kx;
-	private static String helb = "remotemysql.com:3306/anbulatorioa";
+	private static String helb = "remotemysql.com:3306/bvcA2AmJT6";
 	private static String erab = "bvcA2AmJT6";
 	private static String pasa = "a645cRXIen";
-
 	
 	public static int login() {
 		Reader rd = Reader.getReader();
@@ -65,6 +64,12 @@ public class Main {
 	public static void main(String[] args) throws NumberFormatException, IOException, SQLException, KonexioarenParamFaltaException {
 		System.out.println("a");
 		kx = Konexioa.getKonexioa(helb,erab,pasa);
+				
+//		String sql = "SELECT IZENA FROM medikua where NAN=12345678;";
+//		ResultSet a = kx.kontsulta(sql);
+//		System.out.println(a.getString("IZENA"));
+//		Reader.getReader().kontsultaInprimatu(a, "IZENA");
+		
 		int lg = login();
 		if(lg == 1) {
 			ad = Admin.getAdmin();
