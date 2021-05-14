@@ -24,33 +24,31 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/ `anbulatorioa` /*!40100 DEFAULT CHARACT
 USE `anbulatorioa`;
 
 --
--- Table structure for table `botika`
+-- Table structure for table `dosia`
 --
 
-DROP TABLE IF EXISTS `botika`;
+DROP TABLE IF EXISTS `dosia`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `botika` (
+CREATE TABLE `dosia` (
   `GAIXONAN` int(11) DEFAULT NULL,
-  `SSZENB` int(11) DEFAULT NULL,
   `KODEA` int(11) NOT NULL,
   `IZENA` varchar(15) DEFAULT NULL,
   `MARKA` varchar(15) DEFAULT NULL,
-  `DOSIKOP` float DEFAULT NULL,
   `IRAUNGIDATA` date DEFAULT NULL,
   PRIMARY KEY (`KODEA`),
   KEY `GAIXONAN` (`GAIXONAN`),
-  CONSTRAINT `botika_ibfk_1` FOREIGN KEY (`GAIXONAN`) REFERENCES `gaixoa` (`NAN`)
+  CONSTRAINT `dosia_ibfk_1` FOREIGN KEY (`GAIXONAN`) REFERENCES `gaixoa` (`NAN`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `botika`
+-- Dumping data for table `dosia`
 --
 
-LOCK TABLES `botika` WRITE;
-/*!40000 ALTER TABLE `botika` DISABLE KEYS */;
-/*!40000 ALTER TABLE `botika` ENABLE KEYS */;
+LOCK TABLES `dosia` WRITE;
+/*!40000 ALTER TABLE `dosia` DISABLE KEYS */;
+/*!40000 ALTER TABLE `dosia` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -62,7 +60,7 @@ DROP TABLE IF EXISTS `gaixoa`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `gaixoa` (
   `NAN` int(11) NOT NULL,
-  `SSZENB` int(11) DEFAULT NULL,
+  `SSZENB` bigint(20) DEFAULT NULL,
   `IZENA` varchar(15) NOT NULL,
   `ABIZENA` varchar(15) DEFAULT NULL,
   `SEXUA` varchar(8) DEFAULT NULL,
@@ -71,6 +69,7 @@ CREATE TABLE `gaixoa` (
   `HOSPITALEANDAGO` tinyint(1) DEFAULT NULL,
   `NONBIZI` varchar(15) DEFAULT NULL,
   `ADINA` int(11) DEFAULT NULL,
+  `TELF` int(11) DEFAULT NULL,
   PRIMARY KEY (`NAN`),
   UNIQUE KEY `SSZENB` (`SSZENB`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -95,7 +94,7 @@ DROP TABLE IF EXISTS `medikua`;
 CREATE TABLE `medikua` (
   `NAN` int(11) NOT NULL,
   `KOLEGIATUZENB` int(11) DEFAULT NULL,
-  `IZENA` varchar(15) DEFAULT NULL,
+  `IZENA` varchar(15) NOT NULL,
   `ABIZENA` varchar(15) DEFAULT NULL,
   `ZENTROA` varchar(15) DEFAULT NULL,
   `JAIODATA` date DEFAULT NULL,
@@ -125,13 +124,13 @@ DROP TABLE IF EXISTS `zita`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `zita` (
   `MEDIKUNAN` int(11) DEFAULT NULL,
-  `KOLEGIATUZENB` int(11) DEFAULT NULL,
   `GAIXONAN` int(11) DEFAULT NULL,
-  `SSZENB` int(11) DEFAULT NULL,
   `DATA` date DEFAULT NULL,
   `ORDUA` time DEFAULT NULL,
   `LEKUA` varchar(15) DEFAULT NULL,
   `GELA` varchar(4) DEFAULT NULL,
+  `PRESENTZIALKI` tinyint(1) DEFAULT NULL,
+  `ONARTU` tinyint(1) DEFAULT NULL,
   KEY `MEDIKUNAN` (`MEDIKUNAN`),
   KEY `GAIXONAN` (`GAIXONAN`),
   CONSTRAINT `zita_ibfk_1` FOREIGN KEY (`MEDIKUNAN`) REFERENCES `medikua` (`NAN`),
@@ -157,152 +156,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-05-06 13:09:25
--- phpMyAdmin SQL Dump
--- version 5.0.4
--- https://www.phpmyadmin.net/
---
--- Servidor: 127.0.0.1
--- Tiempo de generación: 08-05-2021 a las 18:09:43
--- Versión del servidor: 10.4.17-MariaDB
--- Versión de PHP: 7.4.15
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Base de datos: `anbulatorioa`
---
-CREATE DATABASE IF NOT EXISTS `anbulatorioa` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `anbulatorioa`;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `botika`
---
-
-CREATE TABLE `botika` (
-  `GAIXONAN` int(11) DEFAULT NULL,
-  `SSZENB` int(11) DEFAULT NULL,
-  `KODEA` int(11) NOT NULL,
-  `IZENA` varchar(15) DEFAULT NULL,
-  `MARKA` varchar(15) DEFAULT NULL,
-  `DOSIKOP` float DEFAULT NULL,
-  `IRAUNGIDATA` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `gaixoa`
---
-
-CREATE TABLE `gaixoa` (
-  `NAN` int(11) NOT NULL,
-  `SSZENB` int(11) NOT NULL,
-  `IZENA` varchar(15) NOT NULL,
-  `ABIZENA` varchar(15) DEFAULT NULL,
-  `SEXUA` varchar(8) DEFAULT NULL,
-  `JAIODATA` date DEFAULT NULL,
-  `OHIKOZENTROA` varchar(15) DEFAULT NULL,
-  `HOSPITALEANDAGO` tinyint(1) DEFAULT NULL,
-  `NONBIZI` varchar(15) DEFAULT NULL,
-  `ADINA` int(11) DEFAULT NULL,
-  `TELF` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `medikua`
---
-
-CREATE TABLE `medikua` (
-  `NAN` int(11) NOT NULL,
-  `KOLEGIATUZENB` int(11) NOT NULL,
-  `IZENA` varchar(15) NOT NULL,
-  `ABIZENA` varchar(15) DEFAULT NULL,
-  `ZENTROA` varchar(15) DEFAULT NULL,
-  `JAIODATA` date DEFAULT NULL,
-  `BADAFAMILIAKOMEDIKUA` tinyint(1) DEFAULT NULL,
-  `ESPEZIALITATEA` varchar(15) DEFAULT NULL,
-  `TELF` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `zita`
---
-
-CREATE TABLE `zita` (
-  `MEDIKUNAN` int(11) DEFAULT NULL,
-  `KOLEGIATUZENB` int(11) DEFAULT NULL,
-  `GAIXONAN` int(11) DEFAULT NULL,
-  `SSZENB` int(11) DEFAULT NULL,
-  `DATA` date DEFAULT NULL,
-  `ORDUA` time DEFAULT NULL,
-  `LEKUA` varchar(15) DEFAULT NULL,
-  `GELA` varchar(4) DEFAULT NULL,
-  `PRESENTZIALKI` tinyint(1) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Índices para tablas volcadas
---
-
---
--- Indices de la tabla `botika`
---
-ALTER TABLE `botika`
-  ADD PRIMARY KEY (`KODEA`),
-  ADD KEY `GAIXONAN` (`GAIXONAN`,`SSZENB`);
-
---
--- Indices de la tabla `gaixoa`
---
-ALTER TABLE `gaixoa`
-  ADD PRIMARY KEY (`NAN`,`SSZENB`);
-
---
--- Indices de la tabla `medikua`
---
-ALTER TABLE `medikua`
-  ADD PRIMARY KEY (`NAN`,`KOLEGIATUZENB`);
-
---
--- Indices de la tabla `zita`
---
-ALTER TABLE `zita`
-  ADD KEY `MEDIKUNAN` (`MEDIKUNAN`,`KOLEGIATUZENB`),
-  ADD KEY `GAIXONAN` (`GAIXONAN`,`SSZENB`);
-
---
--- Restricciones para tablas volcadas
---
-
---
--- Filtros para la tabla `botika`
---
-ALTER TABLE `botika`
-  ADD CONSTRAINT `botika_ibfk_1` FOREIGN KEY (`GAIXONAN`,`SSZENB`) REFERENCES `gaixoa` (`NAN`, `SSZENB`);
-
---
--- Filtros para la tabla `zita`
---
-ALTER TABLE `zita`
-  ADD CONSTRAINT `zita_ibfk_1` FOREIGN KEY (`MEDIKUNAN`,`KOLEGIATUZENB`) REFERENCES `medikua` (`NAN`, `KOLEGIATUZENB`),
-  ADD CONSTRAINT `zita_ibfk_2` FOREIGN KEY (`GAIXONAN`,`SSZENB`) REFERENCES `gaixoa` (`NAN`, `SSZENB`);
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+-- Dump completed on 2021-05-13 23:17:41
