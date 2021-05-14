@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 14-05-2021 a las 21:31:26
+-- Tiempo de generación: 14-05-2021 a las 22:21:47
 -- Versión del servidor: 8.0.13-4
 -- Versión de PHP: 7.2.24-0ubuntu0.18.04.7
 
@@ -151,7 +151,13 @@ INSERT INTO `zita` (`MEDIKUNAN`, `GAIXONAN`, `DATA`, `ORDUA`, `LEKUA`, `GELA`, `
 (12345678, 23456793, '2021-05-19', '12:30:00', 'Deusto', 'P73I', 1, 1),
 (12345678, 23456795, '2021-05-17', '10:30:00', 'Deusto', 'P34I', 1, 1),
 (12345686, 23456797, '2021-05-17', '10:30:00', 'Deusto', 'P73I', 1, 0),
-(12345678, 23456790, '2021-05-30', '11:00:00', NULL, NULL, 0, 0);
+(12345678, 23456790, '2021-05-30', '11:00:00', NULL, NULL, 0, 0),
+(12345681, 23456791, '2022-01-01', NULL, NULL, NULL, NULL, NULL),
+(12345684, 23456796, '2023-02-20', NULL, NULL, NULL, NULL, NULL),
+(12345688, 23456793, '2022-11-13', NULL, NULL, NULL, NULL, NULL),
+(12345682, 23456792, '2024-01-12', NULL, NULL, NULL, NULL, NULL),
+(12345686, 23456789, '2022-06-02', NULL, NULL, NULL, NULL, NULL),
+(12345680, 23456794, '2022-12-11', NULL, NULL, NULL, NULL, NULL);
 
 --
 -- Índices para tablas volcadas
